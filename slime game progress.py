@@ -26,3 +26,38 @@ def keyPressed(q):
     mouse = PVector(mouseX, mouseY)
     bullets.append(PVector(player.x, player.y))
     speeds.append(trajectory(mouse, player).mult(7))
+    
+    
+# diff code
+# diff code
+rectangle = PVector(100, 100)
+clicked = False
+
+def setup():
+    size(400, 400)
+    
+def mouseClicked():
+    global clicked
+    
+    if clicked:
+        clicked = False
+    if not clicked:    
+        clicked = True
+    
+def draw():
+
+    if clicked:
+        if mouseX > rectangle.x and mouseX < rectangle.x + 100 and mouseY > rectangle.y and mouseY < rectangle.y + 100:
+            background(0)
+    
+    elif not clicked:
+        background(255)
+        
+
+    fill(0)
+    rect(rectangle.x, rectangle.y, 100, 100)
+    fill(255)
+    textSize(16)
+    text('play', rectangle.x + 40, rectangle.y + 50)
+    
+    
