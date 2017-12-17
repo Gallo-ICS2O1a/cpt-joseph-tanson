@@ -201,7 +201,11 @@ def keyReleased():
 # created functional settings button and semi-functional full and regular screen button
 # created functional settings button and semi-functional full and regular screen button
 
+
 screen = 100
+width = int(screen * 7.5)
+height = int(screen * 6)
+
 bullets_speed = []
 bullets = []
 slimes = [PVector(random(25, 750), random(25, 550))]
@@ -216,9 +220,6 @@ barrier = PVector(100, 100)
 barrier_size = PVector(100, 500)
 
 slow_mo = False
-
-width = int(screen * 7.5)
-height = int(screen * 6)
 
 play_location = PVector((width / 2) - 150, (height / 2) - 50)
 play_clicked = False
@@ -256,6 +257,8 @@ def draw():
     
     
     
+    def setup():
+        size(width, height)
     
     # play button
     if not play_clicked and not settings_clicked:    
@@ -298,7 +301,7 @@ def draw():
             if dist(bullets[i].x, bullets[i].y, slimes[0].x, slimes[0].y) < 25:
                 slimes[0].x, slimes[0].y = random(25, 750), random(25, 500)
                 score += 1
-        slimes[0].add(slimes_speed)
+
         ellipse(slimes[0].x, slimes[0].y, 25, 25)
    
    
@@ -358,8 +361,17 @@ def keyPressed():
     if key == ' ':
         global speed, mouse, player
         mouse = PVector(mouseX, mouseY)
+        bullets.append(PVector(player.x + 30, player.y + 30))
+        bullets.append(PVector(player.x + 15, player.y + 15))
         bullets.append(PVector(player.x, player.y))
+        bullets.append(PVector(player.x - 15, player.y - 15))
+        bullets.append(PVector(player.x - 30, player.y - 30))
+        
+        bullets_speed.append(trajectory(mouse, player).mult(6))
+        bullets_speed.append(trajectory(mouse, player).mult(6))
         bullets_speed.append(trajectory(mouse, player).mult(7))
+        bullets_speed.append(trajectory(mouse, player).mult(6))
+        bullets_speed.append(trajectory(mouse, player).mult(6))
 
 def mousePressed():
     global speed, mouse, player, play_clicked, settings_clicked
