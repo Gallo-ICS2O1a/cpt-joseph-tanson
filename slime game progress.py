@@ -88,7 +88,7 @@ def draw():
             for i in range(len(bullets)):
                     ellipse(bullets[i].x, bullets[i].y, 5, 5)
                     bullets[i].add(bullets_speed[i])
-            bullets.append(PVector(player.x - 30, player.y - 30))    
+            bullets.append(PVector(player.x, player.y))    
             bullets_speed.append(trajectory(mouse, player).mult(6))
         
         
