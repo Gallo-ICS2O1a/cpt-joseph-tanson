@@ -3,7 +3,9 @@
 # created functional settings button and semi-functional full and regular screen button
 
 
-constant_fire = False
+# constant_fire = False
+
+key_states = [False for i in range(223)]
 
 screen = 100
 width = int(screen * 7.5)
@@ -16,7 +18,7 @@ slimes_speed = PVector(1, 1)
 score = 0
 
 player = PVector(200, 200)
-player_size = 100
+player_size = 40
 player_speed = PVector(0, 0)
 
 barrier = PVector(100, 100)
@@ -72,24 +74,31 @@ def draw():
     # if button clicked start game
     fill(0)
     if play_clicked and not settings_clicked:
-        player.add(player_speed)
+        if key_states[65]: # left a
+            player.x -= 3
+        elif key_states[68]: # right d
+            player.x += 3
+        
+        if key_states[87]: # up w
+            player.y -= 3
+        elif key_states[83]: # down s
+            player.y += 3
+        
         ellipse(player.x, player.y, player_size, player_size)
         
-        
-        ellipse(player.x, player.y, 50, 50)
         point(mouse.x, mouse.y)
         
         # showing score
         textSize(24)
         text('Score: ' + str(score), width - 150, 50)
         
-        # constant fire
-        if constant_fire:
-            for i in range(len(bullets)):
-                    ellipse(bullets[i].x, bullets[i].y, 5, 5)
-                    bullets[i].add(bullets_speed[i])
-            bullets.append(PVector(player.x, player.y))    
-            bullets_speed.append(trajectory(mouse, player).mult(6))
+        # # constant fire
+        # if constant_fire:
+        #     for i in range(len(bullets)):
+        #             ellipse(bullets[i].x, bullets[i].y, 5, 5)
+        #             bullets[i].add(bullets_speed[i])
+        #     bullets.append(PVector(player.x, player.y))    
+        #     bullets_speed.append(trajectory(mouse, player).mult(6))
         
         
     # if slow_mo:
@@ -150,52 +159,39 @@ def draw():
 
 
 def keyPressed():
-    global constant_fire
+    # global constant_fire
     
-    if key == 'q':
-        if constant_fire:
-            constant_fire = False
-        else:
-            constant_fire = True
+    # if key == 'q':
+    #     if constant_fire:
+    #         constant_fire = False
+    #     else:
+    #         constant_fire = True
+    global key_states
+    key_states[keyCode] = True
+    print(keyCode)
+
     
-    if key == 'w':
-        player_speed.y -= 5
-        slow_mo = True
+    # if key == ' ':
+        # global speed, mouse, player
+        # mouse = PVector(mouseX, mouseY)
+        # bullets.append(PVector(player.x + 30, player.y + 30))
+        # bullets.append(PVector(player.x + 15, player.y + 15))
+        # bullets.append(PVector(player.x, player.y))
+        # bullets.append(PVector(player.x - 15, player.y - 15))
+        # bullets.append(PVector(player.x - 30, player.y - 30))
         
-    if key == 'a':
-        player_speed.x -= 5
-        slow_mo = True
-        
-    if key == 's':
-        player_speed.y += 5
-        slow_mo = True
-        
-    if key == 'd':
-        player_speed.x += 5
-        slow_mo = True
-        
-    if key == ' ':
-        global speed, mouse, player
-        mouse = PVector(mouseX, mouseY)
-        bullets.append(PVector(player.x + 30, player.y + 30))
-        bullets.append(PVector(player.x + 15, player.y + 15))
-        bullets.append(PVector(player.x, player.y))
-        bullets.append(PVector(player.x - 15, player.y - 15))
-        bullets.append(PVector(player.x - 30, player.y - 30))
-        
-        bullets_speed.append(trajectory(mouse, player).mult(6))
-        bullets_speed.append(trajectory(mouse, player).mult(6))
-        bullets_speed.append(trajectory(mouse, player).mult(7))
-        bullets_speed.append(trajectory(mouse, player).mult(6))
-        bullets_speed.append(trajectory(mouse, player).mult(6))
+        # bullets_speed.append(trajectory(mouse, player).mult(6))
+        # bullets_speed.append(trajectory(mouse, player).mult(6))
+        # bullets_speed.append(trajectory(mouse, player).mult(7))
+        # bullets_speed.append(trajectory(mouse, player).mult(6))
+        # bullets_speed.append(trajectory(mouse, player).mult(6))
 
 def mousePressed():
     global speed, mouse, player, play_clicked, settings_clicked
     
-    if play_clicked:
-        mouse = PVector(mouseX, mouseY)
-        bullets.append(PVector(player.x, player.y))
-        bullets_speed.append(trajectory(mouse, player).mult(7))
+    mouse = PVector(mouseX, mouseY)
+    bullets.append(PVector(player.x, player.y))
+    bullets_speed.append(trajectory(mouse, player).mult(7))
      
     # play button 
     if not settings_clicked:
@@ -230,13 +226,8 @@ def mousePressed():
     print(screen)
     
 def keyReleased():
-    if key == 'w' or key == 's':
-        player_speed.y = 0
-        slow_mo = False
-        
-    if key == 'a' or key == 'd':
-        player_speed.x = 0
-        slow_mo = False
+    global key_states
+    key_states[keyCode] = False
         
         
         
