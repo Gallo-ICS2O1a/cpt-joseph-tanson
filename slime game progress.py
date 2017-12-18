@@ -192,9 +192,10 @@ def keyPressed():
 def mousePressed():
     global speed, mouse, player, play_clicked, settings_clicked
     
-    mouse = PVector(mouseX, mouseY)
-    bullets.append(PVector(player.x, player.y))
-    bullets_speed.append(trajectory(mouse, player).mult(7))
+    if play_clicked:
+        mouse = PVector(mouseX, mouseY)
+        bullets.append(PVector(player.x, player.y))
+        bullets_speed.append(trajectory(mouse, player).mult(7))
      
     # play button 
     if not settings_clicked:
