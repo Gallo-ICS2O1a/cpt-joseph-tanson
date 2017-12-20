@@ -33,7 +33,7 @@ def trajectory(v1, v2):
 
 
 def draw():
-    background(255)
+    background(209, 250, 255)
     fill(0)
     global score
     global speed, player_speed, bullets_speed, slimes_speed, constant_fire
@@ -77,6 +77,7 @@ def draw():
 
     for i in range(len(bullets)):
         #   if bullets > barrier.y and :
+            fill(155, 209, 229)
             ellipse(bullets[i].x, bullets[i].y, 5, 5)
             bullets[i].add(bullets_speed[i])
             for x in range(len(slimes)):
@@ -111,6 +112,7 @@ def draw():
         bullets_speed.append(trajectory(mouse, player).mult(7))
         shot = False
     for s in slimes:
+        fill(21, 113, 69)
         ellipse(s.x, s.y, 25, 25)
 
 def keyPressed():
