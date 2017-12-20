@@ -25,8 +25,8 @@ player = PVector(200, 200)
 player_size = 40
 player_speed = PVector(0, 0)
 
-barrier = PVector(100, 100)
-barrier_size = PVector(100, 500)
+barrier_location = PVector(100, 300)
+barrier_size = PVector(300, 10)
 
 slow_mo = False
 
@@ -65,6 +65,9 @@ def draw():
     global regularscreen_clicked, fullscreen_clicked, screen
     mouse = PVector(mouseX, mouseY)
 
+    rect(barrier_location.x, barrier_location.y, barrier_size.x, barrier_size.y)
+    
+    
     # play button
     # if not play_clicked and not settings_clicked:
     #     fill(0)
@@ -75,7 +78,11 @@ def draw():
     #     text('PLAY', play_location.x + 10, play_location.y + 30)
 
     # if button clicked start game
+    
+    
     fill(0)
+    
+    
     # if play_clicked and not settings_clicked:
     if key_states[65]:  # left a
         player.x -= 3
@@ -133,10 +140,24 @@ def draw():
     for i in range(len(bullets)):
         if i >= len(bullets):
             break
+            
         if bullets[i].x < 0 or bullets[i].x > width or bullets[i].y < 0 or bullets[i].y > height:
             bullets.remove(bullets[i])
             bullets_speed.remove(bullets_speed[i])
             continue
+        
+        if bullets[i].x > barrier_location.x and bullets[i].x < barrier_location.x + barrier_size.x:
+            if bullets[i].y > barrier_location.y and bullets[i].y < barrier_location.y + barrier_size.y:
+                bullets.remove(bullets[i])
+                bullets_speed.remove(bullets_speed[i])
+                
+        else:
+            if bullets[i].x > barrier_location.x and bullets[i].x < barrier_location.x + barrier_size.x:
+                if bullets[i].y > barrier_location.y and bullets[i].y < barrier_location.y + barrier_size.y:
+                    bullets.remove(bullets[i])
+                    bullets_speed.remove(bullets_speed[i])
+            
+        
     
     global shot
     if shot:
