@@ -12,7 +12,6 @@ screen = 100
 width = int(screen * 7.5)
 height = int(screen * 6)
 
-i = 0
 bullets_speed = []
 bullets = []
 slimes = [PVector(random(25, 750), random(25, 550)), 
@@ -123,15 +122,21 @@ def draw():
                 if dist(bullets[i].x, bullets[i].y, slimes[x].x, slimes[x].y) < 25:
                     slimes[x] = PVector(random(25, 750), random(25, 550))
                     score += 1
-    i = 0
-    while True:
-        if i >= len(bullets) - 1:
+    # i = 0
+    # while True:
+    #     if i >= len(bullets) - 1:
+    #         break
+    #     if bullets[i].x < 0 or bullets[i].x > 600 or bullets[i].y > 600 or bullets[i].y < 0:
+    #         bullets.remove(bullets[i])
+    #         i = 0
+    #     i += 1
+    for i in range(len(bullets)):
+        if i >= len(bullets):
             break
-        if bullets[i].x < 0 or bullets[i].x > 600 or bullets[i].y > 600 or bullets[i].y < 0:
+        if bullets[i].x < 0 or bullets[i].x > width or bullets[i].y < 0 or bullets[i].y > height:
             bullets.remove(bullets[i])
             bullets_speed.remove(bullets_speed[i])
-            i = 0
-        i += 1
+            continue
     
     global shot
     if shot:
