@@ -9,7 +9,11 @@ bullets = []
 slimes = [PVector(random(25, 750), random(25, 550)), 
           PVector(random(25, 750), random(25, 550)), 
           PVector(random(25, 750), random(25, 550))]
-slimes_speed = PVector(1, 1)
+
+slimes_speed = [PVector(random(-2, 2), random(-2, 2)),
+                PVector(random(-2, 2), random(-2, 2)),
+                PVector(random(-2, 2), random(-2, 2))]
+
 score = 0
 shot = False
 
@@ -17,8 +21,8 @@ player = PVector(200, 200)
 player_size = 40
 player_speed = PVector(0, 0)
 
-barrier_location = PVector(300, 300)
-barrier_size = PVector(50, 50)
+barrier_location = PVector(100, 250)
+barrier_size = PVector(700, 50)
 
 constant_fire = False
 
@@ -37,7 +41,7 @@ def draw():
     fill(0)
     global score
     global speed, player_speed, bullets_speed, slimes_speed, constant_fire
-    global regularscreen_clicked, fullscreen_clicked, screen
+    global regularscreen_clicked, fullscreen_clicked, screen, slimes, slimes_speed
     mouse = PVector(mouseX, mouseY)
 
     rect(barrier_location.x, barrier_location.y, barrier_size.x, barrier_size.y, 10)
@@ -111,9 +115,11 @@ def draw():
         bullets.append(PVector(player.x, player.y))
         bullets_speed.append(trajectory(mouse, player).mult(7))
         shot = False
-    for s in slimes:
+        
+    for i in range(len(slimes)):
         fill(21, 113, 69)
-        ellipse(s.x, s.y, 25, 25)
+        slimes[i].add(slimes_speed[i])
+        ellipse(slimes[i].x, slimes[i].y, 25, 25)
 
 def keyPressed():
     global constant_fire
