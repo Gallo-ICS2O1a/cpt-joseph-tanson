@@ -100,6 +100,12 @@ def draw():
                 slimes_speed[s].mult(0.1)
                 slimes[s].add(slimes_speed[s].mult(-1))
         
+    # if shot adds a bullet to the game
+    global shot
+    if shot:
+        bullets.append(PVector(player.x, player.y))
+        bullets_speed.append(trajectory(mouse, player).mult(7))
+        shot = False
         
     for i in range(len(bullets)):
         
@@ -135,11 +141,7 @@ def draw():
             
         
     
-    global shot
-    if shot:
-        bullets.append(PVector(player.x, player.y))
-        bullets_speed.append(trajectory(mouse, player).mult(7))
-        shot = False
+
         
     for i in range(len(slimes)):
         fill(21, 113, 69)
