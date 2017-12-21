@@ -10,9 +10,9 @@ slimes = [PVector(random(25, 750), random(25, 550)),
           PVector(random(25, 750), random(25, 550)), 
           PVector(random(25, 750), random(25, 550))]
 
-slimes_speed = [PVector(random(-2, 2), random(-2, 2)),
-                PVector(random(-2, 2), random(-2, 2)),
-                PVector(random(-2, 2), random(-2, 2))]
+slimes_speed = [PVector(random(-0.5, 0.5), random(-0.5, 0.5)),
+                PVector(random(-0.5, 0.5), random(-0.5, 0.5)),
+                PVector(random(-0.5, 0.5), random(-0.5, 0.5))]
 
 score = 0
 shot = False
@@ -35,7 +35,6 @@ def trajectory(v1, v2):
     angle = difference.heading()
     return PVector.fromAngle(angle)
 
-
 def draw():
     background(209, 250, 255)
     fill(0)
@@ -43,6 +42,8 @@ def draw():
     global speed, player_speed, bullets_speed, slimes_speed, constant_fire
     global regularscreen_clicked, fullscreen_clicked, screen, slimes, slimes_speed
     mouse = PVector(mouseX, mouseY)
+    
+
 
     rect(barrier_location.x, barrier_location.y, barrier_size.x, barrier_size.y, 10)
     
@@ -78,14 +79,29 @@ def draw():
 #     bullets_speed *= 2
 #     player_speed *= 2
 
+    # slimes bounce off walls
+    
 
+
+    # makes slimes atrract to player
+    for s in range(len(slimes)):
+        if dist(player.x, player.y, slimes[s].x, slimes[s].y) < 50:
+            print('sss')
+            for x in range(len(slimes)):
+                slimes_speed[x] = trajectory(slimes[x], player)
+                slimes[x].add(slimes_speed[x].mult(-1))
+        
+        
     for i in range(len(bullets)):
+        
         #   if bullets > barrier.y and :
             fill(155, 209, 229)
             ellipse(bullets[i].x, bullets[i].y, 5, 5)
             bullets[i].add(bullets_speed[i])
             for x in range(len(slimes)):
+                
                 if dist(bullets[i].x, bullets[i].y, slimes[x].x, slimes[x].y) < 25:
+                    
                     slimes[x] = PVector(random(25, 750), random(25, 550))
                     score += 1
     for i in range(len(bullets)):
