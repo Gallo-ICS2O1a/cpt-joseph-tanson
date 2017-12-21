@@ -6,6 +6,7 @@ height = int(screen * 6)
 
 bullets_speed = []
 bullets = []
+slime_bullets[]
 slimes = [PVector(random(25, 750), random(25, 550)), 
           PVector(random(25, 750), random(25, 550)), 
           PVector(random(25, 750), random(25, 550))]
@@ -44,6 +45,13 @@ def draw():
     mouse = PVector(mouseX, mouseY)
     
 
+    # lets slimes shoot bullets
+    if frameCount % 120 == 0:
+        for i in range(len(bullets)):
+            fill(155, 209, 229)
+            ellipse(bullets[i].x, bullets[i].y, 5, 5)
+            bullets[i].add(bullets_speed[i])
+    
 
     rect(barrier_location.x, barrier_location.y, barrier_size.x, barrier_size.y, 10)
     
@@ -167,6 +175,7 @@ def mousePressed():
 def keyReleased():
     global key_states
     key_states[keyCode] = False
+
           
           
 # EXTRA CODE **STILL NEEDS TO BE COMBINED**
