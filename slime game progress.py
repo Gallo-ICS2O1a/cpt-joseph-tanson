@@ -80,16 +80,25 @@ def draw():
 #     player_speed *= 2
 
     # slimes bounce off walls
-    
+    for s in range(len(slimes)):
+        if slimes[s].x < 0 or slimes[s].x > width:
+            print('x')
+            slimes_speed[s].x *= (-1)
+            slimes[s].add(slimes_speed[s])
+
+        elif slimes[s].y < 0 or slimes[s].y > height:
+            print('y')
+            slimes_speed[s].y *= -1
+            slimes[s].add(slimes_speed[s])
 
 
     # makes slimes atrract to player
     for s in range(len(slimes)):
-        if dist(player.x, player.y, slimes[s].x, slimes[s].y) < 50:
-            print('sss')
+        if dist(player.x, player.y, slimes[s].x, slimes[s].y) < 200:
             for x in range(len(slimes)):
-                slimes_speed[x] = trajectory(slimes[x], player)
-                slimes[x].add(slimes_speed[x].mult(-1))
+                slimes_speed[s] = (trajectory(slimes[s], player))
+                slimes_speed[s].mult(0.1)
+                slimes[s].add(slimes_speed[s].mult(-1))
         
         
     for i in range(len(bullets)):
