@@ -6,7 +6,8 @@ height = int(screen * 6)
 
 bullets_speed = []
 bullets = []
-slime_bullets = []
+slimes_bullets = []
+slimes_bullets_speed = []
 slimes = [PVector(random(25, 750), random(25, 550)), 
             PVector(random(25, 750), random(25, 550)), 
             PVector(random(25, 750), random(25, 550))]
@@ -42,15 +43,20 @@ def draw():
     global score
     global speed, player_speed, bullets_speed, slimes_speed, constant_fire
     global regularscreen_clicked, fullscreen_clicked, screen, slimes, slimes_speed
+    global slimes_bullets, slimes_bullets_speed
     mouse = PVector(mouseX, mouseY)
     
 
     # lets slimes shoot bullets
     if frameCount % 120 == 0:
-        for i in range(len(bullets)):
+        for i in range(len(slimes)):
+            slimes_bullets.append(slimes[i])
+            slimes_bullets_speed.append(trajectory(slimes[i], player))
+            
             fill(155, 209, 229)
-            ellipse(bullets[i].x, bullets[i].y, 5, 5)
-            bullets[i].add(bullets_speed[i])
+            ellipse(slimes_bullets[i].x, slimes_bullets[i].y, 10, 10)
+    for i in range(len(slimes_bullets)):
+        slimes_bullets[i].add(slimes_bullets_speed[i])
 
 
     rect(barrier_location.x, barrier_location.y, barrier_size.x, barrier_size.y, 10)
@@ -90,12 +96,10 @@ def draw():
     # slimes bounce off walls
     for s in range(len(slimes)):
         if slimes[s].x < 0 or slimes[s].x > width:
-            print('x')
             slimes_speed[s].x *= (-1)
             slimes[s].add(slimes_speed[s])
 
         elif slimes[s].y < 0 or slimes[s].y > height:
-            print('y')
             slimes_speed[s].y *= -1
             slimes[s].add(slimes_speed[s])
 
@@ -116,13 +120,11 @@ def draw():
         shot = False
         
     for i in range(len(bullets)):
-        
-        #   if bullets > barrier.y and :
-            fill(155, 209, 229)
-            ellipse(bullets[i].x, bullets[i].y, 5, 5)
-            bullets[i].add(bullets_speed[i])
+
+        fill(155, 209, 229)
+        ellipse(bullets[i].x, bullets[i].y, 5, 5)
+        bullets[i].add(bullets_speed[i])
             for x in range(len(slimes)):
-                
                 if dist(bullets[i].x, bullets[i].y, slimes[x].x, slimes[x].y) < 25:
                     
                     slimes[x] = PVector(random(25, 750), random(25, 550))
