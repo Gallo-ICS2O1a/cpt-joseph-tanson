@@ -179,44 +179,34 @@
 #     key_states[keyCode] = False
 
 
-
-          
           
 # EXTRA CODE **STILL NEEDS TO BE COMBINED**
-from shucks import Bullet
+
+
+from shucks import Bullet, Player, Slime
 
 key_states = [False for i in range(223)]
 
-screen = 100
-width = int(screen * 7.5)
-height = int(screen * 6)
-
 sm_factor = 3
 b_list = []
-slimes = [PVector(random(25, 750), random(25, 550)), 
-          PVector(random(25, 750), random(25, 550)), 
-          PVector(random(25, 750), random(25, 550))]
-
-slimes_speed = [PVector(random(-0.5, 0.5), random(-0.5, 0.5)),
-                PVector(random(-0.5, 0.5), random(-0.5, 0.5)),
-                PVector(random(-0.5, 0.5), random(-0.5, 0.5))]
+s_list = [Slime(PVector(random(25, 750)), 25, PVector(random(-0.5, 0.5))),
+          Slime(PVector(random(25, 750)), 25, PVector(random(-0.5, 0.5))),
+          Slime(PVector(random(25, 750)), 25, PVector(random(-0.5, 0.5))),]
 
 score = 0
 shot = False
 slow_m = True
 change = False
 
-player = PVector(200, 200)
-player_size = 40
-player_speed = PVector(0, 0)
+player = Player(PVector(200, 200), 40)
 
 barrier_location = PVector(100, 250)
-barrier_size = PVector(700, 50)
+barrier_size = PVector(70, 50)
 
 constant_fire = False
 
 def setup():
-    size(width, height)
+    size(750, 600)
 
 def draw():
     background(209, 250, 255)
@@ -235,23 +225,23 @@ def draw():
     fill(0)
     global sm_factor
     if key_states[65]:  # left a
-        player.x -= 3
-        sm_factor = 6
+        player.lo.x -= 3
+        sm_factor = 8
         change = True
     elif key_states[68]:  # right d
-        player.x += 3
-        sm_factor = 6
+        player.lo.x += 3
+        sm_factor = 8
         change = True
     if key_states[87]:  # up w
-        player.y -= 3
-        sm_factor = 6
+        player.lo.y -= 3
+        sm_factor = 8
         change = True
     elif key_states[83]:  # down s
-        player.y += 3
-        sm_factor = 6
+        player.lo.y += 3
+        sm_factor = 8
         change = True
 
-    ellipse(player.x, player.y, player_size, player_size)
+    ellipse(player.lo.x, player.lo.y, player.si, player.si)
 
     # showing score
     textSize(24)
@@ -285,41 +275,41 @@ def draw():
     for b in b_list:
     #   if bullets > barrier.y and :
         fill(155, 209, 229)
-        ellipse(b.location.x, b.location.y, 5, 5)
+        ellipse(b.lo.x, b.lo.y, 5, 5)
         if slow_m and not b.done:
-            b.speed.normalize()
-            b.speed = b.speed.mult(sm_factor)
+            b.sp.normalize()
+            b.sp = b.sp.mult(sm_factor)
             b.done = True
-        b.location.add(b.speed)
+        b.lo.add(b.sp)
                 
     for b in b_list:
-        if b.location.x < 0 \
-        or b.location.x > width or b.location.y < 0 \
-        or b.location.y > height:
+        if b.lo.x < 0 \
+        or b.lo.x > width or b.lo.y < 0 \
+        or b.lo.y > height:
             b_list.remove(b)
             continue
         
-        if b.location.x > barrier_location.x and b.location.x < barrier_location.x + barrier_size.x:
-            if b.location.y > barrier_location.y and b.location.y < barrier_location.y + barrier_size.y:
+        if b.lo.x > barrier_location.x and b.lo.x < barrier_location.x + barrier_size.x:
+            if b.lo.y > barrier_location.y and b.lo.y < barrier_location.y + barrier_size.y:
                 b_list.remove(b)
         else:
-            if b.location.x > barrier_location.x and b.location.x < barrier_location.x + barrier_size.x:
-                if b.location.y > barrier_location.y and b.location.y < barrier_location.y + barrier_size.y:
+            if b.lo.x > barrier_location.x and b.lo.x < barrier_location.x + barrier_size.x:
+                if b.lo.y > barrier_location.y and b.lo.y < barrier_location.y + barrier_size.y:
                     b_list.remove(b)
         
     
     global shot
     if shot:
-        b_list.append(Bullet(player, mouse))
+        b_list.append(Bullet(player.lo, mouse))
         shot = False
         
-    for i in range(len(slimes)):
+    for s in s_list:
         fill(21, 113, 69)
-        slimes[i].add(slimes_speed[i])
-        ellipse(slimes[i].x, slimes[i].y, 25, 25)
-        for x in range(len(b_list)):
-            if dist(b_list[x].location.x, b_list[x].location.y, slimes[i].x, slimes[i].y) < 25:
-                slimes[i] = PVector(random(25, 750), random(25, 550))
+        s.lo.add(s.sp)
+        ellipse(s.lo.x, s.lo.y, s.si, s.si)
+        for b in b_list:
+            if dist(b.lo.x, b.lo.y, s.lo.x, s.lo.y) < 25:
+                s.lo = PVector(random(25, 750), random(25, 550))
                 score += 1
 
 def keyPressed():
