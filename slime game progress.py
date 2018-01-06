@@ -189,9 +189,9 @@ key_states = [False for i in range(223)]
 
 sm_factor = 3
 b_list = []
-s_list = [Slime(PVector(random(25, 750)), 25, PVector(random(-0.5, 0.5))),
-          Slime(PVector(random(25, 750)), 25, PVector(random(-0.5, 0.5))),
-          Slime(PVector(random(25, 750)), 25, PVector(random(-0.5, 0.5))),]
+s_list = [Slime(PVector(random(25, 750), random(25, 750)), 25, PVector(random(-0.5, 0.5))),
+          Slime(PVector(random(25, 750), random(25, 750)), 25, PVector(random(-0.5, 0.5))),
+          Slime(PVector(random(25, 750), random(25, 750)), 25, PVector(random(-0.5, 0.5))),]
 
 score = 0
 shot = False
@@ -226,19 +226,19 @@ def draw():
     global sm_factor
     if key_states[65]:  # left a
         player.lo.x -= 3
-        sm_factor = 8
+        sm_factor = 13
         change = True
     elif key_states[68]:  # right d
         player.lo.x += 3
-        sm_factor = 8
+        sm_factor = 13
         change = True
     if key_states[87]:  # up w
         player.lo.y -= 3
-        sm_factor = 8
+        sm_factor = 13
         change = True
     elif key_states[83]:  # down s
         player.lo.y += 3
-        sm_factor = 8
+        sm_factor = 13
         change = True
 
     ellipse(player.lo.x, player.lo.y, player.si, player.si)
@@ -300,7 +300,7 @@ def draw():
     
     global shot
     if shot:
-        b_list.append(Bullet(player.lo, mouse))
+        b_list.append(Bullet(player.lo, mouse, True))
         shot = False
         
     for s in s_list:
@@ -308,9 +308,13 @@ def draw():
         s.lo.add(s.sp)
         ellipse(s.lo.x, s.lo.y, s.si, s.si)
         for b in b_list:
-            if dist(b.lo.x, b.lo.y, s.lo.x, s.lo.y) < 25:
+            if dist(b.lo.x, b.lo.y, s.lo.x, s.lo.y) < 25 and b.p:
                 s.lo = PVector(random(25, 750), random(25, 550))
                 score += 1
+                
+    if frameCount % 120 == 0:
+        for s in s_list:
+            b_list.append(Bullet(s.lo, player.lo, False))
 
 def keyPressed():
     global constant_fire
