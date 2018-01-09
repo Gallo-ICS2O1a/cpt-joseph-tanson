@@ -36,7 +36,7 @@ def draw():
     global score, change, b_done
     global speed, player_speed, bullets_speed, slimes_speed, constant_fire
     global regularscreen_clicked, fullscreen_clicked, screen, slimes, slimes_speed
-    global lives, shot
+    global lives, shot, sm_factor
     mouse = PVector(mouseX, mouseY)
     
     if change:
@@ -46,7 +46,7 @@ def draw():
     rect(barrier_location.x, barrier_location.y, barrier_size.x, barrier_size.y, 10)
     
     fill(0)
-    global sm_factor
+
     if key_states[65]:  # left a
         player.lo.x -= 3
         sm_factor = 13
@@ -69,6 +69,10 @@ def draw():
     # showing score
     textSize(24)
     text('Score: ' + str(score), width - 150, 50)
+    
+    # showing lives
+    textSize(24)
+    text('Lives: ' + str(lives), width - 150, 100)
 
     # # constant fire
     # if constant_fire:
@@ -99,6 +103,7 @@ def draw():
         if not b.p:
             if dist(player.lo.x, player.lo.y, b.lo.x, b.lo.y) < (player.si / 2) + 2.5:
                 b_list.remove(b)
+                lives -= 1
     
     for b in b_list:
         if b.lo.x < 0 \
