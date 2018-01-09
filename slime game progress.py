@@ -1,7 +1,3 @@
-          
-
-
-
 from shucks import Bullet, Player, Slime
 
 key_states = [False for i in range(223)]
@@ -40,17 +36,13 @@ def draw():
     global score, change, b_done
     global speed, player_speed, bullets_speed, slimes_speed, constant_fire
     global regularscreen_clicked, fullscreen_clicked, screen, slimes, slimes_speed
-    global lives
+    global lives, shot
     mouse = PVector(mouseX, mouseY)
-
 
     fill(0)
     textSize(32)
     text(lives, 100, 100)
-            
-    
-    
-    
+ 
     if change:
         for b in b_list:
             b.done = False
@@ -91,10 +83,6 @@ def draw():
     #      bullets_speed.append(trajectory(mouse, player).mult(6))
     #      b_done.append(False)
 
-# if slow_mo:
-#     bullets_speed *= 2
-#     player_speed *= 2
-
     # slimes bounce off walls
     for s in s_list:
         if s.lo.x < 0 or s.lo.x > width:
@@ -105,7 +93,6 @@ def draw():
             s.sp.y *= -1
             s.lo.add(s.sp)
 
-
     # makes slimes atrract to player
     for s in s_list:
         if dist(player.lo.x, player.lo.y, s.lo.x, s.lo.y) < 200:
@@ -115,7 +102,6 @@ def draw():
                 s.lo.add(s.sp)
         
     for b in b_list:
-    #   if bullets > barrier.y and :
         fill(155, 209, 229)
         ellipse(b.lo.x, b.lo.y, 5, 5)
         if slow_m and not b.done:
@@ -130,8 +116,7 @@ def draw():
             if dist(player.lo.x, player.lo.y, b.lo.x, b.lo.y) < (player.si / 2) + 2.5:
                 b_list.remove(b)
                 lives -= 1
-
-      
+                    
     for b in b_list:
         if b.lo.x < 0 \
         or b.lo.x > width or b.lo.y < 0 \
@@ -146,9 +131,7 @@ def draw():
             if b.lo.x > barrier_location.x and b.lo.x < barrier_location.x + barrier_size.x:
                 if b.lo.y > barrier_location.y and b.lo.y < barrier_location.y + barrier_size.y:
                     b_list.remove(b)
-        
-    
-    global shot
+
     if shot:
         b_list.append(Bullet(player.lo, mouse, True))
         shot = False
@@ -165,9 +148,8 @@ def draw():
     if frameCount % 120 == 0:
         for s in s_list:
             b_list.append(Bullet(s.lo, player.lo, False))
-            
-    
 
+                    
 def keyPressed():
     global constant_fire
 
@@ -179,11 +161,13 @@ def keyPressed():
     global key_states
     key_states[keyCode] = True
 
+          
 def mousePressed():
     global speed, mouse, player, play_clicked, settings_clicked, shot
 
     shot = True
 
+          
 def keyReleased():
     global key_states, sm_factor, change
     key_states[keyCode] = False
