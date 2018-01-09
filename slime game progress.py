@@ -6,9 +6,9 @@ player = Player(PVector(200, 200), 40)
 
 sm_factor = 3
 b_list = []
-s_list = [Slime(PVector(random(25, 750), random(25, 750)), 25, player.lo),
-          Slime(PVector(random(25, 750), random(25, 750)), 25, player.lo),
-          Slime(PVector(random(25, 750), random(25, 750)), 25, player.lo)]
+s_list = [Slime(PVector(random(25, 750), random(25, 600)), player.lo),
+          Slime(PVector(random(25, 750), random(25, 600)), player.lo),
+          Slime(PVector(random(25, 750), random(25, 600)), player.lo)]
 
 score = 0
 shot = False
@@ -38,11 +38,7 @@ def draw():
     global regularscreen_clicked, fullscreen_clicked, screen, slimes, slimes_speed
     global lives, shot
     mouse = PVector(mouseX, mouseY)
-
-    fill(0)
-    textSize(32)
-    text(lives, 100, 100)
- 
+    
     if change:
         for b in b_list:
             b.done = False
@@ -83,24 +79,12 @@ def draw():
     #      bullets_speed.append(trajectory(mouse, player).mult(6))
     #      b_done.append(False)
 
-    # slimes bounce off walls
-    for s in s_list:
-        if s.lo.x < 0 or s.lo.x > width:
-            s.sp.x *= (-1)
-            s.lo.add(s.sp)
-
-        elif s.lo.y < 0 or s.lo.y > height:
-            s.sp.y *= -1
-            s.lo.add(s.sp)
 
     # makes slimes atrract to player
     for s in s_list:
-        if dist(player.lo.x, player.lo.y, s.lo.x, s.lo.y) < 200:
-            for s in s_list:
-                s.sp = trajectory(player.lo, s.lo)
-                s.sp.mult(-0.5)          
-                s.lo.add(s.sp)
-        
+        prev_lo = s.lo
+        s.sp = trajectory(prev_lo, player.lo).mult(0.3)
+                
     for b in b_list:
         fill(155, 209, 229)
         ellipse(b.lo.x, b.lo.y, 5, 5)
@@ -109,14 +93,13 @@ def draw():
             b.sp = b.sp.mult(sm_factor)
             b.done = True
         b.lo.add(b.sp)
-              
+                
     # if bullet hits player it disapears and lose a life
     for b in b_list:
         if not b.p:
             if dist(player.lo.x, player.lo.y, b.lo.x, b.lo.y) < (player.si / 2) + 2.5:
                 b_list.remove(b)
-                lives -= 1
-                    
+    
     for b in b_list:
         if b.lo.x < 0 \
         or b.lo.x > width or b.lo.y < 0 \
@@ -127,11 +110,8 @@ def draw():
         if b.lo.x > barrier_location.x and b.lo.x < barrier_location.x + barrier_size.x:
             if b.lo.y > barrier_location.y and b.lo.y < barrier_location.y + barrier_size.y:
                 b_list.remove(b)
-        else:
-            if b.lo.x > barrier_location.x and b.lo.x < barrier_location.x + barrier_size.x:
-                if b.lo.y > barrier_location.y and b.lo.y < barrier_location.y + barrier_size.y:
-                    b_list.remove(b)
-
+    
+    global shot
     if shot:
         b_list.append(Bullet(player.lo, mouse, True))
         shot = False
@@ -139,17 +119,16 @@ def draw():
     for s in s_list:
         fill(21, 113, 69)
         s.lo.add(s.sp)
-        ellipse(s.lo.x, s.lo.y, s.si, s.si)
+        ellipse(s.lo.x, s.lo.y, 25, 25)
         for b in b_list:
             if dist(b.lo.x, b.lo.y, s.lo.x, s.lo.y) < 25 and b.p:
                 s.lo = PVector(random(25, 750), random(25, 550))
+                b_list.remove(b)
                 score += 1
-                
     if frameCount % 120 == 0:
         for s in s_list:
             b_list.append(Bullet(s.lo, player.lo, False))
 
-                    
 def keyPressed():
     global constant_fire
 
@@ -161,13 +140,11 @@ def keyPressed():
     global key_states
     key_states[keyCode] = True
 
-          
 def mousePressed():
     global speed, mouse, player, play_clicked, settings_clicked, shot
 
     shot = True
 
-          
 def keyReleased():
     global key_states, sm_factor, change
     key_states[keyCode] = False
