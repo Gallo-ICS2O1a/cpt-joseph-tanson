@@ -16,8 +16,7 @@ class Player:
         self.si = si
 
 class Slime:
-    def __init__(self, lo, si, v2):
+    def __init__(self, lo, v2):
         self.lo = PVector(lo.x, lo.y)
-        self.si = si
-        self.sp = trajectory(lo, v2)
+        self.sp = trajectory(lo, v2).mult(0.5)
         self.done = False
