@@ -117,9 +117,12 @@ def draw():
     # s_list for loop
     for s in s_list:
         # makes slimes atrract to player
-        prev_lo = s.lo
-        s.sp = trajectory(prev_lo, player.lo).mult(0.3)
-
+        s.sp = trajectory(s.lo, player.lo).mult(0.2)# Adds the slow motion
+        if slow_m and not s.done:
+            s.sp.normalize()
+            s.sp = s.sp.mult(sm_factor).mult(0.1)
+            s.done = True
+            
         s.lo.add(s.sp)
 
         # Draws the slimes
@@ -177,6 +180,8 @@ def draw():
     if change:
         for b in b_list:
             b.done = False
+        for s in s_list:
+            s.done = False
 
     #Player movement
     if key_states[65]:  # left a
