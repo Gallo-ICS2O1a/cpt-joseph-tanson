@@ -14,8 +14,11 @@ shot = False
 slow_m = True
 change = False
 
-barrier_location = PVector(100, 250)
-barrier_size = PVector(70, 50)
+barrier1_location = PVector(200, -10)
+barrier1_size = PVector(50, 400)
+
+barrier2_location = PVector(500, 210)
+barrier2_size = PVector(50, 400)
 
 constant_fire = False
 claim_rapid_rifle = False
@@ -39,8 +42,7 @@ def draw():
     background(209, 250, 255)
     global score, money, lives
     global change, b_done
-    global speed, player_speed, bullets_speed, slimes_speed, constant_fire
-    global regularscreen_clicked, fullscreen_clicked, screen, slimes, slimes_speed
+    global constant_fire
     global shot, sm_factor
     global rapid_rifle, claim_rapid_rifle
     mouse = PVector(mouseX, mouseY)
@@ -89,8 +91,11 @@ def draw():
     text('Lives: ' + str(lives), 20, 120)
 
     fill(0)
-    # Drawing barrier
-    rect(barrier_location.x, barrier_location.y, barrier_size.x, barrier_size.y, 10)
+    # Drawing barrier 1
+    rect(barrier1_location.x, barrier1_location.y, barrier1_size.x, barrier1_size.y, 10)
+    
+    # Drawing barrier 2
+    rect(barrier2_location.x, barrier2_location.y, barrier2_size.x, barrier2_size.y, 10)
     
     # Drawing player
     ellipse(player.lo.x, player.lo.y, player.si, player.si)
@@ -150,10 +155,16 @@ def draw():
             b_list.remove(b)
             continue
 
-        # Removes bullets if they hit the barrier
-        if b.lo.x > barrier_location.x and b.lo.x < barrier_location.x + barrier_size.x:
-            if b.lo.y > barrier_location.y and b.lo.y < barrier_location.y + barrier_size.y:
+        # Removes bullets if they hit barrier 1
+        if b.lo.x > barrier1_location.x and b.lo.x < barrier1_location.x + barrier1_size.x:
+            if b.lo.y > barrier1_location.y and b.lo.y < barrier1_location.y + barrier1_size.y:
                 b_list.remove(b)
+                
+        # Removes bullets if they hit barrier 2
+        if b.lo.x > barrier2_location.x and b.lo.x < barrier2_location.x + barrier2_size.x:
+            if b.lo.y > barrier2_location.y and b.lo.y < barrier2_location.y + barrier2_size.y:
+                b_list.remove(b)
+                
 
     # Adds bullet if shot
     if shot:
