@@ -75,20 +75,6 @@ def draw():
     if frameCount % 120 == 0:
         for s in s_list:
             b_list.append(Bullet(s.lo, player.lo, False))
-    
-    fill(0)
-    textSize(24)
-    # Showing weapons
-    text('Weapons: ' + weapons, 20, 30)
-
-    # Showing money
-    text('Money: ' + str(money), 20, 60)
-
-    # Showing score
-    text('Score: ' + str(score), 20, 90)
-
-    # Showing lives
-    text('Lives: ' + str(lives), 20, 120)
 
     fill(0)
     # Drawing barrier 1
@@ -98,15 +84,32 @@ def draw():
     rect(barrier2_location.x, barrier2_location.y, barrier2_size.x, barrier2_size.y, 10)
     
     # Drawing player
+    fill(0, 0, 80)
     ellipse(player.lo.x, player.lo.y, player.si, player.si)
     
+    fill(100, 120, 200)
+    textSize(18)
+    # Showing weapons
+    text('Weapons: ' + weapons, 20, 30)
+
+    # Showing money
+    text('Money: ' + str(money), 20, 50)
+
+    # Showing score
+    text('Score: ' + str(score), 20, 70)
+
+    # Showing lives
+    text('Lives: ' + str(lives), 20, 90)
+
     # Claiming the Rapid Rifle
     if money >= 150 or True:
         # Drawing claim button
         noFill()
+        stroke(100, 120, 200)
         textSize(22)
         rect((width / 2) - 200, 50, 400, 80, 20)
         text('Click here to claim the Rapid Rifle', (width / 2) - 185, 95)
+        stroke(50, 205, 50)
         claim_rapid_rifle = True
 
 
