@@ -20,6 +20,10 @@ barrier1_size = PVector(50, 400)
 barrier2_location = PVector(500, 210)
 barrier2_size = PVector(50, 400)
 
+health_location = PVector(200, 200)
+health_size = 60
+health_pack = True
+
 constant_fire = False
 claim_rapid_rifle = False
 rapid_rifle = False
@@ -76,6 +80,14 @@ def draw():
         for s in s_list:
             b_list.append(Bullet(s.lo, player.lo, False))
 
+    # health pack
+    if frameCount % 1800 == 0:
+        health_location = PVector(random(30, 720), random(30, 570))
+        health_pack = True
+        
+    if frameCount % 2400 == 0:
+        health_pack = False
+
     fill(0)
     # Drawing barrier 1
     rect(barrier1_location.x, barrier1_location.y, barrier1_size.x, barrier1_size.y, 10)
@@ -83,6 +95,16 @@ def draw():
     # Drawing barrier 2
     rect(barrier2_location.x, barrier2_location.y, barrier2_size.x, barrier2_size.y, 10)
     
+    # Drawing health pack
+    if health_pack:
+        fill(255)
+        noStroke()
+        ellipse(health_location.x, health_location.y, health_size, health_size)
+        fill(128, 0, 0)
+        rect(health_location.x - 5, health_location.y - 20, 10, 40)
+        rect(health_location.x - 20, health_location.y - 5, 40, 10)
+        stroke(100, 120, 200)
+          
     # Drawing player
     fill(0, 0, 80)
     ellipse(player.lo.x, player.lo.y, player.si, player.si)
@@ -112,7 +134,11 @@ def draw():
         stroke(50, 205, 50)
         claim_rapid_rifle = True
 
-
+    # Collecting health packs
+    h_p_dist = dist(player.lo.x, player.lo.y, health_location.x, health_location.y)
+    if h_p_dist < (player.si / 2) + (health_size / 2) and health_pack:
+        health_pack = False
+        lives += 2
 
     # s_list for loop
     for s in s_list:
