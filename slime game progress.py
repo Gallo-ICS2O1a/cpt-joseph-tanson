@@ -85,6 +85,11 @@ def draw():
             
         ellipse(circle.x, circle.y, 10, 10)
 
+''' ADAPT THIS FOR PROCESSING
+import random
+numbers = list(range(10,20)) + list(range(40,50))
+print(random.choices(numbers))
+'''
             
     
     if health > 0: 
