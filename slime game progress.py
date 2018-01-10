@@ -14,13 +14,13 @@ shot = False
 slow_m = True
 change = False
 
-barrier1_location = PVector(200, -10)
-barrier1_size = PVector(50, 400)
+bar1_loc = PVector(200, -10)
+bar1_size = PVector(50, 400)
 
-barrier2_location = PVector(500, 210)
-barrier2_size = PVector(50, 400)
+bar2_loc = PVector(500, 210)
+bar2_size = PVector(50, 400)
 
-health_location = PVector(200, 200)
+health_loc = PVector(200, 200)
 health_size = 60
 health_pack = True
 
@@ -29,206 +29,271 @@ claim_rapid_rifle = False
 rapid_rifle = False
 
 score = 0
-lives = 3
+health = 80
 money = 0
 
 weapons = 'Boring Blaster'
 
+
+# if b.lo.x > bar1_loc.x and b.lo.x < bar1_loc.x + bar1_size.x:
+#                 if b.lo.y > bar1_loc.y and b.lo.y < bar1_loc.y + bar1_size.y:
+#                     b_list.remove(b)
+                    
+            # # Removes bullets if they hit barrier 2
+            # if b.lo.x > bar2_loc.x and b.lo.x < bar2_loc.x + bar2_size.x:
+            #     if b.lo.y > bar2_loc.y and b.lo.y < bar2_loc.y + bar2_size.y:
+            #         b_list.remove(b)
+no_spawn1 = [PVector(bar1_loc.x, bar1_loc.x + bar1_size.x),
+            PVector(bar1_loc.y, bar1_loc.y + bar1_size.y)]
+
+no_spawn2 = [PVector(bar2_loc.x, bar2_loc.x + bar2_size.x),
+             PVector(bar2_loc.y, bar2_loc.y + bar2_size.y)]
+
+circle = PVector(random(0, 760), random(0, 600))
 def trajectory(v1, v2):
     difference = PVector.sub(v1, v2)
     angle = difference.heading()
     return PVector.fromAngle(angle).mult(-1)
+
+def midpoint(x1, y1, x2, y2, x3, y3):
+    mid = PVector((x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3)
+    return mid
 
 def setup():
     size(750, 600)
 
 def draw():
     background(209, 250, 255)
-    global score, money, lives
+    global score, money, health
     global change, b_done
     global constant_fire
     global shot, sm_factor
     global rapid_rifle, claim_rapid_rifle
+    global health_pack, health_loc, health_size, health
+    global circle
     mouse = PVector(mouseX, mouseY)
     
-    # # constant fire
-    # if rapid_rifle:
-    #     if constant_fire:
-    #         for b in b_list:
-    #                 ellipse(b.lo.x, b.lo.y, 5, 5)
-    #                 b.lo.add(b.sp)
-    #         global b
-    #         b_list.append(PVector(player.lo.x, player.lo.y))
-    #         b_list.append(trajectory(mouse, player.lo).mult(6))
-    #         b_done.append(False)
-    
-    # makes the bullets faster
-    if frameCount % 1000 == 0:
-        #make the bullets faster and start the bullets slower
-        pass
-    
-    # increases money
-    if frameCount % 500 == 0:
-        if money == 0:
-            money += 2.0
-        else:
-            # do smthing that makes it so the more slimes you kill the faster the money increases
-            money += (money * 1.25) // 1
-    
-    # makes the slimes shoot
-    if frameCount % 120 == 0:
-        for s in s_list:
-            b_list.append(Bullet(s.lo, player.lo, False))
-
-    # health pack
-    if frameCount % 1800 == 0:
-        health_location = PVector(random(30, 720), random(30, 570))
-        health_pack = True
+    for i in range(200):     
+        circle = PVector(random(0, 760), random(0, 600))
+        if circle.x > bar1_loc.x and circle.x < bar1_loc.x + bar1_size.x:
+            if circle.y > bar1_loc.y and circle.y < bar1_loc.y + bar1_size.y:
+                circle.x += bar1_size.x
         
-    if frameCount % 2400 == 0:
-        health_pack = False
-
-    fill(0)
-    # Drawing barrier 1
-    rect(barrier1_location.x, barrier1_location.y, barrier1_size.x, barrier1_size.y, 10)
-    
-    # Drawing barrier 2
-    rect(barrier2_location.x, barrier2_location.y, barrier2_size.x, barrier2_size.y, 10)
-    
-    # Drawing health pack
-    if health_pack:
-        fill(255)
-        noStroke()
-        ellipse(health_location.x, health_location.y, health_size, health_size)
-        fill(128, 0, 0)
-        rect(health_location.x - 5, health_location.y - 20, 10, 40)
-        rect(health_location.x - 20, health_location.y - 5, 40, 10)
-        stroke(100, 120, 200)
-          
-    # Drawing player
-    fill(0, 0, 80)
-    ellipse(player.lo.x, player.lo.y, player.si, player.si)
-    
-    fill(100, 120, 200)
-    textSize(18)
-    # Showing weapons
-    text('Weapons: ' + weapons, 20, 30)
-
-    # Showing money
-    text('Money: ' + str(money), 20, 50)
-
-    # Showing score
-    text('Score: ' + str(score), 20, 70)
-
-    # Showing lives
-    text('Lives: ' + str(lives), 20, 90)
-
-    # Claiming the Rapid Rifle
-    if money >= 150 or True:
-        # Drawing claim button
-        noFill()
-        stroke(100, 120, 200)
-        textSize(22)
-        rect((width / 2) - 200, 50, 400, 80, 20)
-        text('Click here to claim the Rapid Rifle', (width / 2) - 185, 95)
-        stroke(50, 205, 50)
-        claim_rapid_rifle = True
-
-    # Collecting health packs
-    h_p_dist = dist(player.lo.x, player.lo.y, health_location.x, health_location.y)
-    if h_p_dist < (player.si / 2) + (health_size / 2) and health_pack:
-        health_pack = False
-        lives += 2
-
-    # s_list for loop
-    for s in s_list:
-        # makes slimes atrract to player
-        s.sp = trajectory(s.lo, player.lo).mult(0.2)# Adds the slow motion
-        if slow_m and not s.done:
-            s.sp.normalize()
-            s.sp = s.sp.mult(sm_factor).mult(0.1)
-            s.done = True
+        if circle.x > bar2_loc.x and circle.x < bar2_loc.x + bar2_size.x:
+            if circle.y > bar2_loc.y and circle.y < bar2_loc.y + bar2_size.y:
+                circle.x += bar2_size.x
             
-        s.lo.add(s.sp)
+        ellipse(circle.x, circle.y, 10, 10)
 
-        # Draws the slimes
-        fill(21, 113, 69)
-        ellipse(s.lo.x, s.lo.y, 25, 25)
-
-        # Removes player bullets when hits slime and score increases
-        for b in b_list:
-            if dist(b.lo.x, b.lo.y, s.lo.x, s.lo.y) < 25 and b.p:
-                s.lo = PVector(random(25, 750), random(25, 550))
-                b_list.remove(b)
-                score += 1
-                
-    # b_list for loop
-    for b in b_list:
-        # Draws the bullets
-        fill(155, 209, 229)
-        ellipse(b.lo.x, b.lo.y, 5, 5)
-
-        # Adds the slow motion
-        if slow_m and not b.done:
-            b.sp.normalize()
-            b.sp = b.sp.mult(sm_factor)
-            b.done = True
-        b.lo.add(b.sp)
-
-        # if bullet hits player it disapears and lose a life   
-        if not b.p and dist(player.lo.x, player.lo.y, b.lo.x, b.lo.y) < (player.si / 2) + 2.5:
-            b_list.remove(b)
-            lives -= 1
-
-        # Removes bullets after they're off the screen
-        if b.lo.x < 0 \
-        or b.lo.x > width or b.lo.y < 0 \
-        or b.lo.y > height:
-            b_list.remove(b)
-            continue
-
-        # Removes bullets if they hit barrier 1
-        if b.lo.x > barrier1_location.x and b.lo.x < barrier1_location.x + barrier1_size.x:
-            if b.lo.y > barrier1_location.y and b.lo.y < barrier1_location.y + barrier1_size.y:
-                b_list.remove(b)
-                
-        # Removes bullets if they hit barrier 2
-        if b.lo.x > barrier2_location.x and b.lo.x < barrier2_location.x + barrier2_size.x:
-            if b.lo.y > barrier2_location.y and b.lo.y < barrier2_location.y + barrier2_size.y:
-                b_list.remove(b)
-                
-
-    # Adds bullet if shot
-    if shot:
-        b_list.append(Bullet(player.lo, mouse, True))
-        shot = False
+            
     
-    if change:
-        for b in b_list:
-            b.done = False
-        for s in s_list:
-            s.done = False
+    if health > 0: 
+        if health > 100:
+            health = 100
+    
+        # # constant fire
+        # if rapid_rifle:
+        #     if constant_fire:
+        #         for b in b_list:
+        #                 ellipse(b.lo.x, b.lo.y, 5, 5)
+        #                 b.lo.add(b.sp)
+        #         global b
+        #         b_list.append(PVector(player.lo.x, player.lo.y))
+        #         b_list.append(trajectory(mouse, player.lo).mult(6))
+        #         b_done.append(False)
+        
+        # makes the bullets faster
+        if frameCount % 1000 == 0:
+            #make the bullets faster and start the bullets slower
+            pass
+        
+        # increases money
+        if frameCount % 500 == 0:
+            if money == 0:
+                money += 2.0
+            else:
+                # do smthing that makes it so the more slimes you kill the faster the money increases
+                money += (money * 1.25) // 1
+        
+        # makes the slimes shoot
+        if frameCount % 120 == 0:
+            for s in s_list:
+                b_list.append(Bullet(s.lo, player.lo, False))
+    
+        # health pack
+        # for barrier in no_spawn:
+        #     for axis in barrier:
+        #         print(axis)
+        
 
-    #Player movement
-    if key_states[65]:  # left a
-        player.lo.x -= 3
-        sm_factor = 13
-        change = True
-    elif key_states[68]:  # right d
-        player.lo.x += 3
-        sm_factor = 13
-        change = True
-    if key_states[87]:  # up w
-        player.lo.y -= 3
-        sm_factor = 13
-        change = True
-    elif key_states[83]:  # down s
-        player.lo.y += 3
-        sm_factor = 13
-        change = True
+            
+            
+        
+        
+
+        if frameCount % 1800 == 0:
+            health_loc = PVector(random(30, 720), random(30, 570))
+            for axis in no_spawn1:
+                while health_loc.x in range(int(axis.x), int(axis.y)):
+                    health_loc = PVector(random(30, 720), random(30, 570))
+            health_pack = True
+            
+        if frameCount % 2400 == 0:
+            health_pack = False
+    
+        noFill()
+        # Drawing bar 1
+        rect(bar1_loc.x, bar1_loc.y, bar1_size.x, bar1_size.y, 10)
+        
+        # Drawing bar 2
+        rect(bar2_loc.x, bar2_loc.y, bar2_size.x, bar2_size.y, 10)
+        
+        # Drawing health pack
+        if health_pack:
+            fill(255)
+            noStroke()
+            ellipse(health_loc.x, health_loc.y, health_size, health_size)
+            fill(128, 0, 0)
+            rect(health_loc.x - 5, health_loc.y - 20, 10, 40)
+            rect(health_loc.x - 20, health_loc.y - 5, 40, 10)
+            stroke(100, 120, 200)
+            
+        # Drawing player
+        fill(0, 0, 80)
+        ellipse(player.lo.x, player.lo.y, player.si, player.si)
+        
+        fill(100, 120, 200)
+        textSize(18)
+        # Showing weapons
+        text('Weapons: ' + weapons, 20, 30)
+    
+        # Showing money
+        text('Money: ' + str(money), 20, 50)
+    
+        # Showing score
+        text('Score: ' + str(score), 20, 70)
+    
+        # Showing health
+        text('Health: ' + str(health), 20, 90)
+    
+        # Claiming the Rapid Rifle
+        if money >= 150:
+            # Drawing claim button
+            noFill()
+            stroke(100, 120, 200)
+            textSize(22)
+            rect((width / 2) - 200, 50, 400, 80, 20)
+            text('Click here to claim the Rapid Rifle', (width / 2) - 185, 95)
+            stroke(50, 205, 50)
+            claim_rapid_rifle = True
+    
+        # Collecting health packs
+        h_p_dist = dist(player.lo.x, player.lo.y, health_loc.x, health_loc.y)
+        if h_p_dist < (player.si / 2) + (health_size / 2) and health_pack:
+            health_pack = False
+            health += 20
+    
+        # s_list for loop
+        for s in s_list:
+            # makes slimes atrract to player
+            s.sp = trajectory(s.lo, player.lo).mult(0.2)# Adds the slow motion
+            if slow_m and not s.done:
+                s.sp.normalize()
+                s.sp = s.sp.mult(sm_factor).mult(0.1)
+                s.done = True
+                
+            s.lo.add(s.sp)
+    
+            # Draws the slimes
+            fill(21, 113, 69)
+            ellipse(s.lo.x, s.lo.y, 25, 25)
+    
+            # Removes player bullets when hits slime and score increases
+            for b in b_list:
+                if dist(b.lo.x, b.lo.y, s.lo.x, s.lo.y) < 25 and b.p:
+                    s.lo = PVector(random(25, 750), random(25, 550))
+                    b_list.remove(b)
+                    score += 1
+                    
+        # b_list for loop
+        for b in b_list:
+            # Draws the bullets
+            fill(155, 209, 229)
+            ellipse(b.lo.x, b.lo.y, 5, 5)
+    
+            # Adds the slow motion
+            if slow_m and not b.done:
+                b.sp.normalize()
+                b.sp = b.sp.mult(sm_factor)
+                b.done = True
+            b.lo.add(b.sp)
+    
+            # if bullet hits player it disapears and lose a life   
+            if not b.p and dist(player.lo.x, player.lo.y, b.lo.x, b.lo.y) < (player.si / 2) + 2.5:
+                b_list.remove(b)
+                health -= 10
+    
+            # Removes bullets after they're off the screen
+            if b.lo.x < 0 \
+            or b.lo.x > width or b.lo.y < 0 \
+            or b.lo.y > height:
+                b_list.remove(b)
+                continue
+    
+            # Removes bullets if they hit barrier 1
+            if b.lo.x > bar1_loc.x and b.lo.x < bar1_loc.x + bar1_size.x:
+                if b.lo.y > bar1_loc.y and b.lo.y < bar1_loc.y + bar1_size.y:
+                    b_list.remove(b)
+                    
+            # Removes bullets if they hit barrier 2
+            if b.lo.x > bar2_loc.x and b.lo.x < bar2_loc.x + bar2_size.x:
+                if b.lo.y > bar2_loc.y and b.lo.y < bar2_loc.y + bar2_size.y:
+                    b_list.remove(b)
+                    
+    
+        # Adds bullet if shot
+        if shot:
+            b_list.append(Bullet(player.lo, mouse, True))
+            shot = False
+        
+        if change:
+            for b in b_list:
+                b.done = False
+            for s in s_list:
+                s.done = False
+    
+        #Player movement
+        if key_states[65]:  # left a
+            player.lo.x -= 3
+            sm_factor = 13
+            change = True
+        elif key_states[68]:  # right d
+            player.lo.x += 3
+            sm_factor = 13
+            change = True
+        if key_states[87]:  # up w
+            player.lo.y -= 3
+            sm_factor = 13
+            change = True
+        elif key_states[83]:  # down s
+            player.lo.y += 3
+            sm_factor = 13
+            change = True
+            
+    else:
+        if health < 0:
+            health = 0
+            
+        textSize(72)
+        text('GAME OVER', 200, 300)
+        textSize(32)
+        text('Score: ' + str(score), 200, 350)
+        text('Money: ' + str(money), 200, 390)
+        text('Health: ' + str(health), 200, 430)
 
 def keyPressed():
     global constant_fire, key_states
+
 
     if key == 'q':
          if constant_fire:
