@@ -34,11 +34,17 @@ money = 0
 
 weapons = 'Boring Blaster'
 
-no_spawn1x = list(range(int(bar1_loc.x), int(bar1_loc.x + bar1_size.x)))
-no_spawn1y = list(range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y)))
+# no_spawn1 = PVector([i for i in range(int(bar1_loc.x), int(bar1_loc.x + bar1_size.x))], 
+#                     [i for i in range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y))])
 
-no_spawn2x = list(range(int(bar2_loc.x), int(bar2_loc.x + bar2_size.x)))
-no_spawn2y = list(range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y)))
+# no_spawn1 = PVector([i for i in range(int(bar2_loc.x), int(bar2_loc.x + bar2_size.x))],
+#                     [i for i in range(int(bar2_loc.y), int(bar2_loc.y + bar2_size.y))])
+
+no_spawn1x = [i for i in range(int(bar1_loc.x), int(bar1_loc.x + bar1_size.x))]
+no_spawn1y = [i for i in range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y))]
+
+no_spawn2x = [i for i in range(int(bar2_loc.x), int(bar2_loc.x + bar2_size.x))]
+no_spawn2y = [i for i in range(int(bar2_loc.y), int(bar2_loc.y + bar2_size.y))]
 
 circle = PVector(random(0, 760), random(0, 600))
 
@@ -51,9 +57,9 @@ def midpoint(x1, y1, x2, y2, x3, y3):
     mid = PVector((x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3)
     return mid
 
-def in_barrier(x, y):
-    if (x in no_spawn1x and y in no_spawn1y) \
-    or (x in no_spawn2x and y in no_spawn2y):
+def in_barrier(v):
+    if (int(v.x) in no_spawn1x) and (int(v.y) in no_spawn1y) \
+    or (int(v.x) in no_spawn2x) and (int(v.y) in no_spawn2y):
         return True
     else:
         return False
@@ -72,8 +78,7 @@ def draw():
     global health_pack, health_loc, health_size, health
     global circle
     mouse = PVector(mouseX, mouseY)
-    import random
-
+    
     if health > 0: 
         if health > 100:
             health = 100
@@ -108,7 +113,7 @@ def draw():
                 b_list.append(Bullet(s.lo, player.lo, False))
 
         if frameCount % 1800 == 0:
-            health_loc = PVector(random.randint(30, 720), random.randint(30, 570))
+            health_loc = PVector(random(30, 720), random(30, 570))
             health_pack = True
             
         if frameCount % 2400 == 0:
@@ -184,7 +189,7 @@ def draw():
             # Removes player bullets when hits slime and score increases
             for b in b_list:
                 if dist(b.lo.x, b.lo.y, s.lo.x, s.lo.y) < 25 and b.p:
-                    s.lo = PVector(random.randint(25, 750), random.randint(25, 550))
+                    s.lo = PVector(random(25, 750), random(25, 550))
                     b_list.remove(b)
                     score += 1
                     
