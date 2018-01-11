@@ -34,22 +34,14 @@ money = 0
 
 weapons = 'Boring Blaster'
 
+no_spawn1x = list(range(int(bar1_loc.x), int(bar1_loc.x + bar1_size.x)))
+no_spawn1y = list(range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y)))
 
-# if b.lo.x > bar1_loc.x and b.lo.x < bar1_loc.x + bar1_size.x:
-#                 if b.lo.y > bar1_loc.y and b.lo.y < bar1_loc.y + bar1_size.y:
-#                     b_list.remove(b)
-                    
-            # # Removes bullets if they hit barrier 2
-            # if b.lo.x > bar2_loc.x and b.lo.x < bar2_loc.x + bar2_size.x:
-            #     if b.lo.y > bar2_loc.y and b.lo.y < bar2_loc.y + bar2_size.y:
-            #         b_list.remove(b)
-no_spawn1 = [PVector(bar1_loc.x, bar1_loc.x + bar1_size.x),
-            PVector(bar1_loc.y, bar1_loc.y + bar1_size.y)]
-
-no_spawn2 = [PVector(bar2_loc.x, bar2_loc.x + bar2_size.x),
-             PVector(bar2_loc.y, bar2_loc.y + bar2_size.y)]
+no_spawn2x = list(range(int(bar2_loc.x), int(bar2_loc.x + bar2_size.x)))
+no_spawn2y = list(range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y)))
 
 circle = PVector(random(0, 760), random(0, 600))
+
 def trajectory(v1, v2):
     difference = PVector.sub(v1, v2)
     angle = difference.heading()
@@ -72,26 +64,20 @@ def draw():
     global health_pack, health_loc, health_size, health
     global circle
     mouse = PVector(mouseX, mouseY)
-    
-    for i in range(200):     
-        circle = PVector(random(0, 760), random(0, 600))
-        if circle.x > bar1_loc.x and circle.x < bar1_loc.x + bar1_size.x:
-            if circle.y > bar1_loc.y and circle.y < bar1_loc.y + bar1_size.y:
-                circle.x += bar1_size.x
+    import random
+    for i in range(200):    
+        circle = PVector(random.choice(no_spawn1x), random.choice(no_spawn1y))
         
-        if circle.x > bar2_loc.x and circle.x < bar2_loc.x + bar2_size.x:
-            if circle.y > bar2_loc.y and circle.y < bar2_loc.y + bar2_size.y:
-                circle.x += bar2_size.x
+        # if circle.x > bar1_loc.x and circle.x < bar1_loc.x + bar1_size.x:
+        #     if circle.y > bar1_loc.y and circle.y < bar1_loc.y + bar1_size.y:
+        #         circle.x += bar1_size.x
+        
+        # if circle.x > bar2_loc.x and circle.x < bar2_loc.x + bar2_size.x:
+        #     if circle.y > bar2_loc.y and circle.y < bar2_loc.y + bar2_size.y:
+        #         circle.x += bar2_size.x
             
         ellipse(circle.x, circle.y, 10, 10)
 
-''' ADAPT THIS FOR PROCESSING
-import random
-numbers = list(range(10,20)) + list(range(40,50))
-print(random.choices(numbers))
-'''
-            
-    
     if health > 0: 
         if health > 100:
             health = 100
@@ -124,17 +110,6 @@ print(random.choices(numbers))
         if frameCount % 120 == 0:
             for s in s_list:
                 b_list.append(Bullet(s.lo, player.lo, False))
-    
-        # health pack
-        # for barrier in no_spawn:
-        #     for axis in barrier:
-        #         print(axis)
-        
-
-            
-            
-        
-        
 
         if frameCount % 1800 == 0:
             health_loc = PVector(random(30, 720), random(30, 570))
