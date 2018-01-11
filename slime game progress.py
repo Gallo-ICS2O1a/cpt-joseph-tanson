@@ -51,6 +51,14 @@ def midpoint(x1, y1, x2, y2, x3, y3):
     mid = PVector((x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3)
     return mid
 
+def in_barrier(x, y):
+    if (x in no_spawn1x and y in no_spawn1y) \
+    or (x in no_spawn2x and y in no_spawn2y):
+        return True
+    else:
+        return False
+
+
 def setup():
     size(750, 600)
 
@@ -65,18 +73,6 @@ def draw():
     global circle
     mouse = PVector(mouseX, mouseY)
     import random
-    for i in range(200):    
-        circle = PVector(random.choice(no_spawn1x), random.choice(no_spawn1y))
-        
-        # if circle.x > bar1_loc.x and circle.x < bar1_loc.x + bar1_size.x:
-        #     if circle.y > bar1_loc.y and circle.y < bar1_loc.y + bar1_size.y:
-        #         circle.x += bar1_size.x
-        
-        # if circle.x > bar2_loc.x and circle.x < bar2_loc.x + bar2_size.x:
-        #     if circle.y > bar2_loc.y and circle.y < bar2_loc.y + bar2_size.y:
-        #         circle.x += bar2_size.x
-            
-        ellipse(circle.x, circle.y, 10, 10)
 
     if health > 0: 
         if health > 100:
@@ -112,10 +108,7 @@ def draw():
                 b_list.append(Bullet(s.lo, player.lo, False))
 
         if frameCount % 1800 == 0:
-            health_loc = PVector(random(30, 720), random(30, 570))
-            for axis in no_spawn1:
-                while health_loc.x in range(int(axis.x), int(axis.y)):
-                    health_loc = PVector(random(30, 720), random(30, 570))
+            health_loc = PVector(random.randint(30, 720), random.randint(30, 570))
             health_pack = True
             
         if frameCount % 2400 == 0:
@@ -191,7 +184,7 @@ def draw():
             # Removes player bullets when hits slime and score increases
             for b in b_list:
                 if dist(b.lo.x, b.lo.y, s.lo.x, s.lo.y) < 25 and b.p:
-                    s.lo = PVector(random(25, 750), random(25, 550))
+                    s.lo = PVector(random.randint(25, 750), random.randint(25, 550))
                     b_list.remove(b)
                     score += 1
                     
@@ -223,7 +216,7 @@ def draw():
             # Removes bullets if they hit barrier 1
             if b.lo.x > bar1_loc.x and b.lo.x < bar1_loc.x + bar1_size.x:
                 if b.lo.y > bar1_loc.y and b.lo.y < bar1_loc.y + bar1_size.y:
-                    b_list.remove(b)
+                    b_list.remove(b)# error from not checking if players bullet
                     
             # Removes bullets if they hit barrier 2
             if b.lo.x > bar2_loc.x and b.lo.x < bar2_loc.x + bar2_size.x:
