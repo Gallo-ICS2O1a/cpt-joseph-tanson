@@ -40,13 +40,11 @@ weapons = 'Boring Blaster'
 # no_spawn1 = PVector([i for i in range(int(bar2_loc.x), int(bar2_loc.x + bar2_size.x))],
 #                     [i for i in range(int(bar2_loc.y), int(bar2_loc.y + bar2_size.y))])
 
-no_spawn1x = [i for i in range(int(bar1_loc.x), int(bar1_loc.x + bar1_size.x))]
-no_spawn1y = [i for i in range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y))]
+no_spawn1x = [i for i in range(int(bar1_loc.x - health_size / 2), int(bar1_loc.x + bar1_size.x + health_size / 2))]
+no_spawn1y = [i for i in range(int(bar1_loc.y - health_size / 2), int(bar1_loc.y + bar1_size.y + health_size / 2))]
 
-no_spawn2x = [i for i in range(int(bar2_loc.x), int(bar2_loc.x + bar2_size.x))]
-no_spawn2y = [i for i in range(int(bar2_loc.y), int(bar2_loc.y + bar2_size.y))]
-
-circle = PVector(random(0, 760), random(0, 600))
+no_spawn2x = [i for i in range(int(bar2_loc.x - health_size / 2), int(bar2_loc.x + bar2_size.x + health_size / 2))]
+no_spawn2y = [i for i in range(int(bar2_loc.y - health_size / 2), int(bar2_loc.y + bar2_size.y + health_size / 2))]
 
 def trajectory(v1, v2):
     difference = PVector.sub(v1, v2)
@@ -63,7 +61,6 @@ def in_barrier(v):
         return True
     else:
         return False
-
 
 def setup():
     size(750, 600)
@@ -114,6 +111,8 @@ def draw():
 
         if frameCount % 1800 == 0:
             health_loc = PVector(random(30, 720), random(30, 570))
+            while in_barrier(health_loc):
+                health_loc = PVector(random(30, 720), random(30, 570))
             health_pack = True
             
         if frameCount % 2400 == 0:
@@ -190,6 +189,8 @@ def draw():
             for b in b_list:
                 if dist(b.lo.x, b.lo.y, s.lo.x, s.lo.y) < 25 and b.p:
                     s.lo = PVector(random(25, 750), random(25, 550))
+                    while in_barrier(s.lo):
+                        s.lo = PVector(random(25, 750), random(25, 550))
                     b_list.remove(b)
                     score += 1
                     
