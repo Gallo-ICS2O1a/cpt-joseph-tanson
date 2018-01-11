@@ -216,7 +216,7 @@ def draw():
             # Removes bullets if they hit barrier 1
             if b.lo.x > bar1_loc.x and b.lo.x < bar1_loc.x + bar1_size.x:
                 if b.lo.y > bar1_loc.y and b.lo.y < bar1_loc.y + bar1_size.y:
-                    b_list.remove(b)# error from not checking if players bullet
+                    b_list.remove(b)
                     
             # Removes bullets if they hit barrier 2
             if b.lo.x > bar2_loc.x and b.lo.x < bar2_loc.x + bar2_size.x:
