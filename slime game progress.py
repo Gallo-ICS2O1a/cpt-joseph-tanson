@@ -32,7 +32,11 @@ score = 0
 health = 80
 money = 0
 
-weapons = 'Boring Blaster'
+weapons = ['Boring Blaster']
+weap_show = ''
+
+res_loc = PVector(175, 50) 
+res_si = PVector(400, 100)
 
 # no_spawn1 = PVector([i for i in range(int(bar1_loc.x), int(bar1_loc.x + bar1_size.x))], 
 #                     [i for i in range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y))])
@@ -74,22 +78,28 @@ def draw():
     global rapid_rifle, claim_rapid_rifle
     global health_pack, health_loc, health_size, health
     global circle
+    global weap_show
     mouse = PVector(mouseX, mouseY)
     
     if health > 0: 
         if health > 100:
             health = 100
     
-        # # constant fire
-        # if rapid_rifle:
+        # constant fire
+        # if rapid_rifle or True:
         #     if constant_fire:
         #         for b in b_list:
-        #                 ellipse(b.lo.x, b.lo.y, 5, 5)
-        #                 b.lo.add(b.sp)
-        #         global b
+        #             ellipse(b.lo.x, b.lo.y, 5, 5)
+        #         b.lo.add(b.sp)
         #         b_list.append(PVector(player.lo.x, player.lo.y))
-        #         b_list.append(trajectory(mouse, player.lo).mult(6))
-        #         b_done.append(False)
+        #         b_list.append(Bullet)
+        #         b_list.append(player.lo)
+        #         b_list.append(mouse)
+        #         b_list.append(False)
+                
+        # add a auto shoot for every 10 seconds
+        
+        
         
         # makes the bullets faster
         if frameCount % 1000 == 0:
@@ -133,8 +143,8 @@ def draw():
             fill(128, 0, 0)
             rect(health_loc.x - 5, health_loc.y - 20, 10, 40)
             rect(health_loc.x - 20, health_loc.y - 5, 40, 10)
-            stroke(100, 120, 200)
             
+        stroke(100, 120, 200)
         # Drawing player
         fill(0, 0, 80)
         ellipse(player.lo.x, player.lo.y, player.si, player.si)
@@ -142,7 +152,10 @@ def draw():
         fill(100, 120, 200)
         textSize(18)
         # Showing weapons
-        text('Weapons: ' + weapons, 20, 30)
+        for weapon in weapons:
+            if weapon not in weap_show:
+                weap_show += weapon + ' '
+        text('Weapons: ' + weap_show, 20, 30)
     
         # Showing money
         text('Money: ' + str(money), 20, 50)
@@ -178,8 +191,11 @@ def draw():
                 s.sp.normalize()
                 s.sp = s.sp.mult(sm_factor).mult(0.1)
                 s.done = True
-                
             s.lo.add(s.sp)
+    
+            # if s.lo.x in no_spawn1x:
+            #     if s.lo.x < (bar_loc.x + bar_si.x) / 2:
+            #         s.lo.x = bar_loc.x
     
             # Draws the slimes
             fill(21, 113, 69)
@@ -263,6 +279,14 @@ def draw():
         if health < 0:
             health = 0
             
+        # Drawing restart button
+        fill(255)
+        rect(res_loc.x, res_loc.y, res_si.x, res_si.y, 20)
+        fill(155, 209, 229)
+        textSize(72)
+        text('Restart', (((res_loc.x + res_si.x) / 2) - 50), res_loc.y + res_si.y - 20)
+        
+        # Showing scores    
         textSize(72)
         text('GAME OVER', 200, 300)
         textSize(32)
@@ -284,14 +308,26 @@ def keyPressed():
 
 def mousePressed():
     global shot, rapid_rifle, claim_rapid_rifle
-
+    global health, money, score
     shot = True
     
     if claim_rapid_rifle:
         if mouseX > (width / 2) - 200 and mouseX < (width / 2) + 200:
             if mouseY > 50 and mouseY < 130:
                 rapid_rifle = True
-
+                
+                
+    if health <= 0:
+        if mouseX > res_loc.x and mouseX < res_loc.x + res_si.x \
+        and mouseY > res_loc.y and mouseY < res_loc.y + res_si.y:
+            health = 100
+            money = 0
+            score = 0
+            b_list = []
+            s_list = [Slime(PVector(random(25, 750), random(25, 600)), player.lo),
+                      Slime(PVector(random(25, 750), random(25, 600)), player.lo),
+                      Slime(PVector(random(25, 750), random(25, 600)), player.lo)]
+            
 
 def keyReleased():
     global key_states, sm_factor, change
