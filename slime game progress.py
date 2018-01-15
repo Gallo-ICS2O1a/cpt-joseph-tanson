@@ -14,6 +14,8 @@ shot = False
 slow_m = True
 change = False
 
+level = 2
+
 bar1_loc = PVector(200, -10)
 bar1_size = PVector(50, 400)
 
@@ -79,18 +81,28 @@ def draw():
     global health_pack, health_loc, health_size, health
     global circle
     global weap_show
+    global bar1_loc, bar1_size, bar2_loc, bar2_size
     mouse = PVector(mouseX, mouseY)
-    
+
     if health > 0: 
         if health > 100:
             health = 100
-    
-        # constant fire
+
+        if level == 2:
+            bar1_loc = PVector((width / 2) - (bar1_size.x /2), (height / 4))
+            bar1_size = PVector(500, 50)
+            
+            bar2_loc = PVector((width / 2) - (bar1_size.x /2), ((height / 4) * 3))
+            bar2_size = PVector(500, 50)
+
+        # # constant fire
         # if rapid_rifle or True:
         #     if constant_fire:
         #         for b in b_list:
         #             ellipse(b.lo.x, b.lo.y, 5, 5)
         #         b.lo.add(b.sp)
+                
+        #         b_list.append(Bullet(player.lo, mouse, False))
         #         b_list.append(PVector(player.lo.x, player.lo.y))
         #         b_list.append(Bullet)
         #         b_list.append(player.lo)
@@ -98,9 +110,9 @@ def draw():
         #         b_list.append(False)
                 
         # add a auto shoot for every 10 seconds
-        
-        
-        
+
+
+
         # makes the bullets faster
         if frameCount % 1000 == 0:
             #make the bullets faster and start the bullets slower
@@ -221,7 +233,7 @@ def draw():
                 b.sp.normalize()
                 b.sp = b.sp.mult(sm_factor)
                 b.done = True
-            b.lo.add(b.sp)
+            b.lo.add(b.sp.mult(0.5))
     
             # if bullet hits player it disapears and lose a life   
             if not b.p and dist(player.lo.x, player.lo.y, b.lo.x, b.lo.y) < (player.si / 2) + 2.5:
@@ -323,6 +335,7 @@ def mousePressed():
             health = 100
             money = 0
             score = 0
+            frameCount(0)
             b_list = []
             s_list = [Slime(PVector(random(25, 750), random(25, 600)), player.lo),
                       Slime(PVector(random(25, 750), random(25, 600)), player.lo),
