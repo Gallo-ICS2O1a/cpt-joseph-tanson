@@ -221,7 +221,7 @@ def draw():
                 b.sp.normalize()
                 b.sp = b.sp.mult(sm_factor)
                 b.done = True
-            b.lo.add(b.sp)
+            b.lo.add(b.sp.mult(0.4))
     
             # if bullet hits player it disapears and lose a life   
             if not b.p and dist(player.lo.x, player.lo.y, b.lo.x, b.lo.y) < (player.si / 2) + 2.5:
