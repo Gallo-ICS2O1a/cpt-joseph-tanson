@@ -202,6 +202,8 @@ def draw():
                 s.sp.normalize()
                 s.sp = s.sp.mult(sm_factor).mult(0.1)
                 s.done = True
+            if in_barrier(PVector(s.lo.x + s.sp.x, s.lo.y + s.sp.y)):
+                s.sp = PVector(s.sp.x * 0.22, s.sp.y * 0.22)
             s.lo.add(s.sp)
     
             # if s.lo.x in no_spawn1x:
