@@ -2,7 +2,7 @@ from shucks import Bullet, Player, Slime
 
 key_states = [False for i in range(223)]
 
-player = Player(PVector(200, 200), 40)
+player = Player(PVector(375, 300), 40)
 
 sm_factor = 3
 b_list = []
@@ -14,7 +14,6 @@ shot = False
 slow_m = True
 change = False
 
-level = 2
 
 bar1_loc = PVector(200, -10)
 bar1_size = PVector(50, 400)
@@ -46,11 +45,11 @@ res_si = PVector(400, 100)
 # no_spawn1 = PVector([i for i in range(int(bar2_loc.x), int(bar2_loc.x + bar2_size.x))],
 #                     [i for i in range(int(bar2_loc.y), int(bar2_loc.y + bar2_size.y))])
 
-no_spawn1x = [i for i in range(int(bar1_loc.x - health_size / 2), int(bar1_loc.x + bar1_size.x + health_size / 2))]
-no_spawn1y = [i for i in range(int(bar1_loc.y - health_size / 2), int(bar1_loc.y + bar1_size.y + health_size / 2))]
+no_spawn1x = [i for i in range(int(bar1_loc.x), int(bar1_loc.x + bar1_size.x))]
+no_spawn1y = [i for i in range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y))]
 
-no_spawn2x = [i for i in range(int(bar2_loc.x - health_size / 2), int(bar2_loc.x + bar2_size.x + health_size / 2))]
-no_spawn2y = [i for i in range(int(bar2_loc.y - health_size / 2), int(bar2_loc.y + bar2_size.y + health_size / 2))]
+no_spawn2x = [i for i in range(int(bar2_loc.x), int(bar2_loc.x + bar2_size.x))]
+no_spawn2y = [i for i in range(int(bar2_loc.y), int(bar2_loc.y + bar2_size.y))]
 
 def trajectory(v1, v2):
     difference = PVector.sub(v1, v2)
@@ -88,12 +87,12 @@ def draw():
         if health > 100:
             health = 100
 
-        if level == 2:
-            bar1_loc = PVector((width / 2) - (bar1_size.x /2), (height / 4))
-            bar1_size = PVector(500, 50)
+        # if level == 2:
+        #     bar1_loc = PVector((width / 2) - (bar1_size.x /2), (height / 4))
+        #     bar1_size = PVector(500, 50)
             
-            bar2_loc = PVector((width / 2) - (bar1_size.x /2), ((height / 4) * 3))
-            bar2_size = PVector(500, 50)
+        #     bar2_loc = PVector((width / 2) - (bar1_size.x /2), ((height / 4) * 3))
+        #     bar2_size = PVector(500, 50)
 
         # # constant fire
         # if rapid_rifle or True:
@@ -270,22 +269,31 @@ def draw():
                 s.done = False
     
         #Player movement
+        
         if key_states[65]:  # left a
-            player.lo.x -= 3
-            sm_factor = 13
-            change = True
+            if not in_barrier(PVector(player.lo.x - 3 - 18, player.lo.y)):
+                player.lo.x -= 3
+                sm_factor = 13
+                change = True
+            else: print(True)
         elif key_states[68]:  # right d
-            player.lo.x += 3
-            sm_factor = 13
-            change = True
+            if not in_barrier(PVector(player.lo.x + 3 + 18, player.lo.y)):
+                player.lo.x += 3
+                sm_factor = 13
+                change = True
+            else: print(True)
         if key_states[87]:  # up w
-            player.lo.y -= 3
-            sm_factor = 13
-            change = True
+            if not in_barrier(PVector(player.lo.x, player.lo.y - 3 - 18)):
+                player.lo.y -= 3
+                sm_factor = 13
+                change = True
+            else: print(True)
         elif key_states[83]:  # down s
-            player.lo.y += 3
-            sm_factor = 13
-            change = True
+            if not in_barrier(PVector(player.lo.x, player.lo.y + 3 + 18)):
+                player.lo.y += 3
+                sm_factor = 13
+                change = True
+            else: print(True)
             
     else:
         if health < 0:
