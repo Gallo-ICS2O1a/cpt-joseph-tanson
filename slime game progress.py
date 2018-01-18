@@ -38,7 +38,7 @@ rrclaimed = False # if the rr was claimed
 
 score = 0
 health = 80
-money = 0
+money = 200
 ammo = 0
 
 weapons = ['Boring Blaster']
@@ -57,6 +57,10 @@ play_loc = PVector(100, 150)
 play_si = PVector(550, 150)
 
 menu = True
+
+auto_fire = False
+af_freq = 600
+claim_af = False
 
 def trajectory(v1, v2):
     difference = PVector.sub(v1, v2)
@@ -89,6 +93,7 @@ def draw():
     global weap_show
     global bar1_loc, bar1_size, bar2_loc, bar2_size
     global menu
+    global claim_af
     mouse = PVector(mouseX, mouseY)
     
     if menu:
@@ -132,9 +137,11 @@ def draw():
         if rapid_rifle and frameCount % 5 == 0 and ammo > 0:
             b_list.append(Bullet(player.lo, mouse, True))
             ammo -= 1
-            weapons.append('Rapid Rifle')
-                
-        # add a auto shoot for every 10 seconds
+            
+        # Auto firing
+        if auto_fire and frameCount % af_freq == 0:
+            for s in s_list:
+                b_list.append(Bullet(player.lo, s.lo, True))
 
         # makes the bullets faster
         if frameCount % 1000 == 0:
@@ -142,18 +149,19 @@ def draw():
             pass
         
         # increases money
-        if frameCount % 100 == 0:
+        if frameCount % 500 == 0:
             if money == 0:
                 money += 2.0
             else:
                 # do smthing that makes it so the more slimes you kill the faster the money increases
-                money = sqrt(money / 0.01) // 1
+                money = sqrt(money / 0.006) // 1
         
         # makes the slimes shoot
         if frameCount % 120 == 0:
             for s in s_list:
                 b_list.append(Bullet(s.lo, player.lo, False))
 
+        # Spawning health packs
         if frameCount % 1800 == 0:
             health_loc = PVector(random(30, 720), random(30, 570))
             while in_barrier(health_loc):
@@ -211,10 +219,19 @@ def draw():
             noFill()
             stroke(100, 120, 200)
             textSize(22)
-            rect((width / 2) - 200, 50, 400, 80, 20)
-            text('Click here to claim the Rapid Rifle', (width / 2) - 185, 95)
-            stroke(50, 205, 50)
+            rect(450, 50, 130, 100, 20)
+            text('Rapid Rifle', 460, 80)
+            text('$150', 460, 120)
             claim_rapid_rifle = True
+
+        if money > 100 and af_freq > 60:
+            noFill()
+            stroke(100, 120, 200)
+            textSize(22)
+            rect(600, 50, 130, 100, 20)
+            text('Auto Shoot', 610, 80)
+            text('$100', 610, 120)
+            claim_af = True
 
         # Collecting health packs
         h_p_dist = dist(player.lo.x, player.lo.y, health_loc.x, health_loc.y)
@@ -233,10 +250,6 @@ def draw():
             if in_barrier(PVector(s.lo.x + s.sp.x, s.lo.y + s.sp.y)):
                 s.sp = PVector(s.sp.x * 0.22, s.sp.y * 0.22)
             s.lo.add(s.sp)
-    
-            # if s.lo.x in no_spawn1x:
-            #     if s.lo.x < (bar_loc.x + bar_si.x) / 2:
-            #         s.lo.x = bar_loc.x
     
             # Draws the slimes
             fill(21, 113, 69)
@@ -355,16 +368,28 @@ def mousePressed():
     global shot, rapid_rifle, claim_rapid_rifle
     global health, money, score, health_start
     global b_list, s_list, menu, rrclaimed, ammo
+    global claim_af, af_freq, auto_fire
     shot = True
     
+    450, 50, 130, 100, 20
+    
     if claim_rapid_rifle:
-        if mouseX > (width / 2) - 200 and mouseX < (width / 2) + 200 \
-        and mouseY > 50 and mouseY < 130:
+        if mouseX > 450 and mouseX < 580 \
+        and mouseY > 50 and mouseY < 150:
             claim_rapid_rifle = False
             rrclaimed = True
             ammo = 300
             money -= 150
+            weapons.append('Rapid Rifle')
                 
+    if claim_af:
+        if mouseX > 600 and mouseX < 730 \
+        and mouseY > 50 and mouseY < 150:
+            claim_af = False
+            money -= 100
+            auto_fire = True
+            if af_freq > 60:
+                af_freq -= 60
                 
     if health <= 0:
         if mouseX > res_loc.x and mouseX < res_loc.x + res_si.x \
