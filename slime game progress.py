@@ -5,7 +5,7 @@ key_states = [False for i in range(223)]
 player = Player(PVector(375, 300), 40)
 
 sm_factor = 3
-b_list = []from shucks import Bullet, Player, Slime
+b_list = []
 
 key_states = [False for i in range(223)]
 
@@ -32,26 +32,20 @@ health_loc = PVector(200, 200)
 health_size = 60
 health_pack = True
 
-constant_fire = True
-claim_rapid_rifle = False
-rapid_rifle = False
+claim_rapid_rifle = False # if player can claim the rr
+rapid_rifle = False # if the gun is firing
+rrclaimed = False # if the rr was claimed
 
 score = 0
 health = 80
 money = 0
-ammo = 100
+ammo = 0
 
 weapons = ['Boring Blaster']
 weap_show = ''
 
 res_loc = PVector(175, 50) 
 res_si = PVector(400, 100)
-
-# no_spawn1 = PVector([i for i in range(int(bar1_loc.x), int(bar1_loc.x + bar1_size.x))], 
-#                     [i for i in range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y))])
-
-# no_spawn1 = PVector([i for i in range(int(bar2_loc.x), int(bar2_loc.x + bar2_size.x))],
-#                     [i for i in range(int(bar2_loc.y), int(bar2_loc.y + bar2_size.y))])
 
 no_spawn1x = [i for i in range(int(bar1_loc.x), int(bar1_loc.x + bar1_size.x))]
 no_spawn1y = [i for i in range(int(bar1_loc.y), int(bar1_loc.y + bar1_size.y))]
@@ -87,13 +81,14 @@ def draw():
     background(209, 250, 255)
     global score, money, health
     global change, b_done
-    global constant_fire, ammo
+    global ammo, rrclaimed
     global shot, sm_factor
     global rapid_rifle, claim_rapid_rifle
     global health_pack, health_loc, health_size, health, health_start
     global circle
     global weap_show
     global bar1_loc, bar1_size, bar2_loc, bar2_size
+    global menu
     mouse = PVector(mouseX, mouseY)
     
     if menu:
@@ -134,9 +129,10 @@ def draw():
         #     bar2_size = PVector(500, 50)
 
         # constant fire
-        if frameCount % 4 == 0 and ammo > 0:
+        if rapid_rifle and frameCount % 5 == 0 and ammo > 0:
             b_list.append(Bullet(player.lo, mouse, True))
             ammo -= 1
+            weapons.append('Rapid Rifle')
                 
         # add a auto shoot for every 10 seconds
 
@@ -146,12 +142,12 @@ def draw():
             pass
         
         # increases money
-        if frameCount % 500 == 0:
+        if frameCount % 100 == 0:
             if money == 0:
                 money += 2.0
             else:
                 # do smthing that makes it so the more slimes you kill the faster the money increases
-                money += (money * 1.25) // 1
+                money = sqrt(money / 0.01) // 1
         
         # makes the slimes shoot
         if frameCount % 120 == 0:
@@ -193,7 +189,7 @@ def draw():
         # Showing weapons
         for weapon in weapons:
             if weapon not in weap_show:
-                weap_show += weapon + ' '
+                weap_show += weapon + ' / '
         text('Weapons: ' + weap_show, 20, 30)
     
         # Showing money
@@ -204,9 +200,13 @@ def draw():
     
         # Showing health
         text('Health: ' + str(health), 20, 90)
+        
+        # Showing ammo
+        #if rrclaimed:
+        text('RR Ammo' + str(ammo), 20, 110)
     
         # Claiming the Rapid Rifle
-        if money >= 150:
+        if money >= 150 and ammo == 0:
             # Drawing claim button
             noFill()
             stroke(100, 120, 200)
@@ -215,7 +215,7 @@ def draw():
             text('Click here to claim the Rapid Rifle', (width / 2) - 185, 95)
             stroke(50, 205, 50)
             claim_rapid_rifle = True
-    
+
         # Collecting health packs
         h_p_dist = dist(player.lo.x, player.lo.y, health_loc.x, health_loc.y)
         if h_p_dist < (player.si / 2) + (health_size / 2) and health_pack:
@@ -341,27 +341,29 @@ def draw():
         text('Health: ' + str(health), 200, 430)
 
 def keyPressed():
-    global constant_fire, key_states
+    global rapid_rifle, key_states
 
-
-    if key == 'q':
-         if constant_fire:
-             constant_fire = False
-         else:
-             constant_fire = True
+    if rrclaimed and key == 'q':
+        if rapid_rifle:
+            rapid_rifle = False
+        else:
+            rapid_rifle = True
 
     key_states[keyCode] = True
 
 def mousePressed():
     global shot, rapid_rifle, claim_rapid_rifle
     global health, money, score, health_start
-    global b_list, s_list
+    global b_list, s_list, menu, rrclaimed, ammo
     shot = True
     
     if claim_rapid_rifle:
-        if mouseX > (width / 2) - 200 and mouseX < (width / 2) + 200:
-            if mouseY > 50 and mouseY < 130:
-                rapid_rifle = True
+        if mouseX > (width / 2) - 200 and mouseX < (width / 2) + 200 \
+        and mouseY > 50 and mouseY < 130:
+            claim_rapid_rifle = False
+            rrclaimed = True
+            ammo = 300
+            money -= 150
                 
                 
     if health <= 0:
