@@ -385,4 +385,4 @@ def keyReleased():
     global key_states, sm_factor, change
     key_states[keyCode] = False
     sm_factor = 3
-    change = True
+    change = True 
