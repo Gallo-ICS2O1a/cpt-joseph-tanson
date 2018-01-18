@@ -19,7 +19,7 @@ s_list = [Slime(PVector(random(25, 750), random(25, 600)), player.lo),
 
 shot = False
 slow_m = True
-change = False
+change = True
 health_start = False
 
 bar1_loc = PVector(200, -10)
