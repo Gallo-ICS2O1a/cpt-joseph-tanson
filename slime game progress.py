@@ -11,7 +11,6 @@ key_states = [False for i in range(223)]
 
 player = Player(PVector(375, 300), 40)
 
-sm_factor = 3
 b_list = []
 s_list = [Slime(PVector(random(25, 750), random(25, 600)), player.lo),
           Slime(PVector(random(25, 750), random(25, 600)), player.lo),
@@ -133,8 +132,12 @@ def draw():
         #     bar2_loc = PVector((width / 2) - (bar1_size.x /2), ((height / 4) * 3))
         #     bar2_size = PVector(500, 50)
 
+        # make frequency of rapid fire in slow motion change
+        if slow_m: sm_b_f = 7
+        else: sm_b_f = 4
+          
         # constant fire
-        if rapid_rifle and frameCount % 5 == 0 and ammo > 0:
+        if rapid_rifle and frameCount % sm_b_f == 0 and ammo > 0:
             b_list.append(Bullet(player.lo, mouse, True))
             ammo -= 1
             
