@@ -37,7 +37,7 @@ rrclaimed = False
 
 score = 0
 health = 80
-money = 0
+money = 200
 ammo = 0
 
 weapons = ['Boring Blaster']
@@ -72,11 +72,6 @@ def trajectory(v1, v2):
     difference = PVector.sub(v1, v2)
     angle = difference.heading()
     return PVector.fromAngle(angle).mult(-1)
-
-
-def midpoint(x1, y1, x2, y2, x3, y3):
-    mid = PVector((x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3)
-    return mid
 
 
 def in_barrier(v):
@@ -214,7 +209,10 @@ def draw():
 
         # Showing auto shooting level
         if auto_fire:
-            text('Auto Shoot lv: ' + str((af_freq / 60) * -1 + 10), 550, 30)
+            af_level = str((af_freq / 60) * -1 + 10)
+            if af_level = '9':
+                af_level = 'max.
+            text('Auto Shoot lv: ' + af_level), 550, 30)
 
         # Showing money
         text('Money: $' + str(money), 20, 50)
