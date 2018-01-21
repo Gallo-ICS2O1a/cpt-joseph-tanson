@@ -1,4 +1,5 @@
 from shucks import Bullet, Player, Slime
+import ast
 
 key_states = [False for i in range(223)]
 
@@ -18,7 +19,6 @@ s_list = [Slime(PVector(random(25, 750), random(25, 600)), player.lo),
           Slime(PVector(random(25, 750), random(25, 600)), player.lo)]
 
 shot = False
-slow_m = True
 change = True
 
 bar1_loc = PVector(200, -10)
@@ -72,7 +72,6 @@ def trajectory(v1, v2):
     difference = PVector.sub(v1, v2)
     angle = difference.heading()
     return PVector.fromAngle(angle).mult(-1)
-
 
 
 def in_barrier(v):
@@ -149,6 +148,11 @@ def draw():
             for s in s_list:
                 b_list.append(Bullet(player.lo, s.lo, True))
 
+        # makes the bullets faster
+        if frameCount % 1000 == 0:
+            # make the bullets faster and start the bullets slower
+            pass
+
         # increases money
         if frameCount % 300 == 0 : money += 15
 
@@ -170,9 +174,7 @@ def draw():
         # increase freq slimes shoot and speed of bullets
         if frameCount % 1200 == 0:
             shoot_freq = int(shoot_freq * 0.95)
-            for b in b_list:
-                if not b.p:
-                    bs_fac *= 1.05
+            bs_fac *= 1.1
 
         stroke(0)
         fill(255)
@@ -200,15 +202,15 @@ def draw():
         textSize(18)
         # Showing weapons
         for weapon in weapons:
-            if weapon not in weap_show : weap_show += weapon + ' / '
+            if weapon not in weap_show: weap_show += weapon + ' / '
         text('Weapons: ' + weap_show, 20, 30)
 
         # Showing auto shooting level
         if auto_fire:
             af_level = str((af_freq / 60) * -1 + 10)
             if af_level == '9':
-                af_level = 'max.'
-            text('Auto Shoot lv: ' + af_level, 550, 30)
+                af_level = 'max'
+            text(('Auto Shoot lv: ' + af_level), 550, 30)
 
         # Showing money
         text('Money: $' + str(money), 20, 50)
@@ -233,6 +235,8 @@ def draw():
             text('$150', 460, 110)
             text('(press "Q")', 460, 140)
             claim_rapid_rifle = True
+            if 'Rapid Rifle' in weapons:
+                weapons.remove('Rapid Rifle')
 
         # Buying auto fires
         if money >= 100 and af_freq > 60:
@@ -255,7 +259,7 @@ def draw():
 
             # makes slimes atrract to player
             s.sp = trajectory(s.lo, player.lo).mult(0.2)  # Adds the slow mo
-            if slow_m and not s.done:
+            if not s.done:
                 s.sp.normalize()
                 s.sp = s.sp.mult(sm_factor).mult(0.1)
                 s.done = True
@@ -287,13 +291,14 @@ def draw():
             ellipse(b.lo.x, b.lo.y, 5, 5)
 
             # Adds the slow motion
-            if slow_m and not b.done:
+            if not b.done:
                 b.sp.normalize()
-                b.sp = b.sp.mult(sm_factor)
+                b.sp.mult(sm_factor)
+                if not b.p:
+                    b.sp.mult(bs_fac)
                 b.done = True
 
-            # Adds the bullet speed to the locaiton
-            b.sp.mult(bs_fac)
+            # Adds the bullet speed to the location
             b.lo.add(b.sp.mult(0.5))
 
             # if bullet hits player it disapears and lose a life
@@ -336,6 +341,7 @@ def draw():
         if change:
             for b in b_list:
                 b.done = False
+                
             for s in s_list:
                 s.done = False
 
