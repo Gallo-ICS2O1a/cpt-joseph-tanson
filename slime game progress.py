@@ -37,7 +37,7 @@ rrclaimed = False
 
 score = 0
 health = 80
-money = 200
+money = 0
 ammo = 0
 
 weapons = ['Boring Blaster']
@@ -72,6 +72,7 @@ def trajectory(v1, v2):
     difference = PVector.sub(v1, v2)
     angle = difference.heading()
     return PVector.fromAngle(angle).mult(-1)
+
 
 
 def in_barrier(v):
@@ -148,11 +149,6 @@ def draw():
             for s in s_list:
                 b_list.append(Bullet(player.lo, s.lo, True))
 
-        # makes the bullets faster
-        if frameCount % 1000 == 0:
-            # make the bullets faster and start the bullets slower
-            pass
-
         # increases money
         if frameCount % 300 == 0 : money += 15
 
@@ -176,7 +172,7 @@ def draw():
             shoot_freq = int(shoot_freq * 0.95)
             for b in b_list:
                 if not b.p:
-                    bs_fac *= 1.1
+                    bs_fac *= 1.05
 
         stroke(0)
         fill(255)
