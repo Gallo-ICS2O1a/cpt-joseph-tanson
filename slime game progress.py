@@ -111,10 +111,8 @@ def draw():
         # Play button
         noStroke()
         textSize(72)
-        if frameCount % 60 == 0:
-            play_fill = 255
-        if frameCount % 80 == 0:
-            play_fill = 247
+        if frameCount % 60 == 0 : play_fill = 255
+        if frameCount % 80 == 0 : play_fill = 247
         fill(play_fill)
         rect(play_loc.x, play_loc.y, play_si.x, play_si.y, 20)
         fill(155, 209, 229)
@@ -170,8 +168,7 @@ def draw():
                 health_loc = PVector(random(30, 720), random(30, 570))
             health_pack = True
 
-        if frameCount % 2400 == 0:
-            health_pack = False
+        if frameCount % 2400 == 0 : health_pack = False
 
         # increase freq slimes shoot and speed of bullets
         if frameCount % 1200 == 0:
@@ -216,8 +213,7 @@ def draw():
         # Showing auto shooting level
         if auto_fire:
             af_level = str((af_freq / 60) * -1 + 10)
-            if af_level == '9':
-                af_level = 'max'
+            if af_level == '9' : af_level = 'max'
             text(('Auto Shoot lv: ' + af_level), 550, 30)
 
         # Showing money
@@ -290,18 +286,15 @@ def draw():
         for b in b_list:
 
             # Draws the bullets
-            if b.p:
-                fill(0)
-            elif not b.p:
-                fill(241, 219, 75)
+            if b.p : fill(0)
+            elif not b.p : fill(241, 219, 75)
             ellipse(b.lo.x, b.lo.y, 5, 5)
 
             # Adds the slow motion
             if not b.done:
                 b.sp.normalize()
                 b.sp.mult(sm_factor)
-                if not b.p:
-                    b.sp.mult(bs_fac)
+                if not b.p : b.sp.mult(bs_fac)
                 b.done = True
 
             # Adds the bullet speed to the location
@@ -374,8 +367,7 @@ def draw():
                 change = True
 
     else:
-        if health < 0:
-            health = 0
+        if health < 0 : health = 0
 
         # Drawing restart button
         fill(255)
@@ -400,17 +392,15 @@ def keyPressed():
     global rapid_rifle, key_states
 
     if rrclaimed and key == 'q':
-        if rapid_rifle:
-            rapid_rifle = False
-        else:
-            rapid_rifle = True
+        if rapid_rifle : rapid_rifle = False
+        else : rapid_rifle = True
 
     key_states[keyCode] = True
 
 
 def mousePressed():
     global rapid_rifle, claim_rapid_rifle, rrclaimed
-    global claim_af, af_freq, auto_fire
+    global claim_af, af_freq, auto_fire, shoot_freq
     global health, money, score, ammo
     global weap_show, weapons
     global b_list, s_list
