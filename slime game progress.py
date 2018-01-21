@@ -311,9 +311,8 @@ def draw():
 
             # Removes bullets after they're off the screen
             if (
-                b.lo.x < 0 or
-                b.lo.x > width or b.lo.y < 0 or
-                b.lo.y > height
+                b.lo.x < 0 or b.lo.x > width or
+                b.lo.y < 0 or b.lo.y > height
             ):
                 b_list.remove(b)
                 continue
@@ -338,9 +337,11 @@ def draw():
             shot = False
 
         if change:
+            # b.done = [False for b in b_list]
             for b in b_list:
                 b.done = False
 
+            # s.done = [False for s in s_list]
             for s in s_list:
                 s.done = False
 
