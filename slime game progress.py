@@ -20,7 +20,6 @@ s_list = [Slime(PVector(random(25, 750), random(25, 600)), player.lo),
 shot = False
 slow_m = True
 change = True
-health_start = False
 
 bar1_loc = PVector(200, -10)
 bar1_size = PVector(50, 400)
@@ -38,7 +37,7 @@ rrclaimed = False
 
 score = 0
 health = 80
-money = 9999999
+money = 0
 ammo = 0
 
 weapons = ['Boring Blaster']
@@ -65,7 +64,9 @@ claim_af = False
 shoot_freq = 200
 
 play_fill = 255
+
 bs_fac = 1
+
 
 def trajectory(v1, v2):
     difference = PVector.sub(v1, v2)
@@ -79,29 +80,33 @@ def midpoint(x1, y1, x2, y2, x3, y3):
 
 
 def in_barrier(v):
-    if (int(v.x) in no_spawn1x) and (int(v.y) in no_spawn1y) or (
-    int(v.x) in no_spawn2x) and (int(v.y) in no_spawn2y):
+    if (
+        (int(v.x) in no_spawn1x) and (int(v.y) in no_spawn1y) or
+        (int(v.x) in no_spawn2x) and (int(v.y) in no_spawn2y)
+    ):
         return True
     else:
         return False
+
 
 def setup():
     size(750, 600)
 
 
 def draw():
-    background(209, 250, 255)
-    global score, money, health
-    global change, b_done
-    global ammo, rrclaimed
-    global shot, sm_factor
-    global rapid_rifle, claim_rapid_rifle
-    global health_pack, health_loc, health_size, health, health_start
-    global circle, menu, claim_af
-    global weap_show, shoot_freq
+    global rrclaimed, rapid_rifle, claim_rapid_rifle
     global bar1_loc, bar1_size, bar2_loc, bar2_size
+    global health_pack, health_loc, health_size
+    global score, money, health, ammo
+    global change, b_done
+    global shoot_freq
+    global weap_show
     global play_fill
+    global sm_factor
+    global claim_af
     global bs_fac
+    global shot
+    background(209, 250, 255)
     mouse = PVector(mouseX, mouseY)
 
     if menu:
@@ -135,8 +140,8 @@ def draw():
         text('Use Mouse to Aim and Fire', 180, 570)
 
     elif health > 0:
-        if health > 100:
-            health = 100
+
+        if health > 100 : health = 100
 
         # constant fire
         if rapid_rifle and frameCount % 5 == 0 and ammo > 0:
@@ -154,11 +159,7 @@ def draw():
             pass
 
         # increases money
-        if frameCount % 500 == 0:
-            if money == 0:
-                money += 2.0
-            else:
-                money = sqrt(money / 0.006) // 1
+        if frameCount % 300 == 0 : money += 15
 
         # makes the slimes shoot
         if frameCount % shoot_freq == 0:
@@ -174,7 +175,7 @@ def draw():
 
         if frameCount % 2400 == 0:
             health_pack = False
-            
+
         # increase freq slimes shoot and speed of bullets
         if frameCount % 1200 == 0:
             shoot_freq = int(shoot_freq * 0.95)
@@ -199,8 +200,8 @@ def draw():
             rect(health_loc.x - 5, health_loc.y - 20, 10, 40)
             rect(health_loc.x - 20, health_loc.y - 5, 40, 10)
 
-        stroke(100, 120, 200)
         # Drawing player
+        stroke(100, 120, 200)
         fill(0, 0, 80)
         ellipse(player.lo.x, player.lo.y, player.si, player.si)
 
@@ -208,15 +209,15 @@ def draw():
         textSize(18)
         # Showing weapons
         for weapon in weapons:
-            if weapon not in weap_show:
-                weap_show += weapon + ' / '
+            if weapon not in weap_show : weap_show += weapon + ' / '
         text('Weapons: ' + weap_show, 20, 30)
-        
+
+        # Showing auto shooting level
         if auto_fire:
-            text('Auto Shoot lv. :' + str((af_freq / 60) * -1 + 10), 550, 30)
+            text('Auto Shoot lv: ' + str((af_freq / 60) * -1 + 10), 550, 30)
 
         # Showing money
-        text('Money: ' + str(money), 20, 50)
+        text('Money: $' + str(money), 20, 50)
 
         # Showing score
         text('Score: ' + str(score), 20, 70)
@@ -225,8 +226,7 @@ def draw():
         text('Health: ' + str(health), 20, 90)
 
         # Showing ammo
-        if rrclaimed:
-            text('RR Ammo :' + str(ammo), 20, 110)
+        if rrclaimed and ammo != 0 : text('RR Ammo: ' + str(ammo), 20, 110)
 
         # Claiming the Rapid Rifle
         if money >= 150 and ammo == 0:
@@ -240,7 +240,8 @@ def draw():
             text('(press "Q")', 460, 140)
             claim_rapid_rifle = True
 
-        if money > 100 and af_freq > 60:
+        # Buying auto fires
+        if money >= 100 and af_freq > 60:
             noFill()
             stroke(100, 120, 200)
             textSize(22)
@@ -257,6 +258,7 @@ def draw():
 
         # s_list for loop
         for s in s_list:
+
             # makes slimes atrract to player
             s.sp = trajectory(s.lo, player.lo).mult(0.2)  # Adds the slow mo
             if slow_m and not s.done:
@@ -282,6 +284,7 @@ def draw():
 
         # b_list for loop
         for b in b_list:
+
             # Draws the bullets
             if b.p:
                 fill(0)
@@ -295,32 +298,41 @@ def draw():
                 b.sp = b.sp.mult(sm_factor)
                 b.done = True
 
+            # Adds the bullet speed to the locaiton
             b.sp.mult(bs_fac)
             b.lo.add(b.sp.mult(0.5))
 
             # if bullet hits player it disapears and lose a life
-            if not b.p and dist(
-            player.lo.x, player.lo.y, b.lo.x, b.lo.y
-            ) < (player.si / 2) + 2.5:
-                    b_list.remove(b)
-                    health -= 10
+            if (
+                not b.p and
+                dist(player.lo.x, player.lo.y, b.lo.x, b.lo.y) <
+                (player.si / 2) + 2.5
+            ):
+                b_list.remove(b)
+                health -= 10
 
             # Removes bullets after they're off the screen
-            if (b.lo.x < 0 or 
-            b.lo.x > width or b.lo.y < 0 or
-            b.lo.y > height):
-                    b_list.remove(b)
-                    continue
+            if (
+                b.lo.x < 0 or
+                b.lo.x > width or b.lo.y < 0 or
+                b.lo.y > height
+            ):
+                b_list.remove(b)
+                continue
 
             # Removes bullets if they hit barrier 1
-            if b.lo.x > bar1_loc.x and b.lo.x < bar1_loc.x + bar1_size.x:
-                if b.lo.y > bar1_loc.y and b.lo.y < bar1_loc.y + bar1_size.y:
+            if (
+                b.lo.x > bar1_loc.x and b.lo.x < bar1_loc.x + bar1_size.x and
+                b.lo.y > bar1_loc.y and b.lo.y < bar1_loc.y + bar1_size.y
+            ):
                     b_list.remove(b)
 
             # Removes bullets if they hit barrier 2
-            if b.lo.x > bar2_loc.x and b.lo.x < bar2_loc.x + bar2_size.x:
-                if b.lo.y > bar2_loc.y and b.lo.y < bar2_loc.y + bar2_size.y:
-                    b_list.remove(b)
+            if (
+                b.lo.x > bar2_loc.x and b.lo.x < bar2_loc.x + bar2_size.x and
+                b.lo.y > bar2_loc.y and b.lo.y < bar2_loc.y + bar2_size.y
+            ):
+                b_list.remove(b)
 
         # Adds bullet if shot
         if shot:
@@ -334,7 +346,6 @@ def draw():
                 s.done = False
 
         # Player movement
-
         if key_states[65]:  # left a
             if not in_barrier(PVector(player.lo.x - 3 - 18, player.lo.y)):
                 player.lo.x -= 3
@@ -392,15 +403,23 @@ def keyPressed():
 
 
 def mousePressed():
-    global shot, rapid_rifle, claim_rapid_rifle
-    global health, money, score, health_start
-    global b_list, s_list, menu, rrclaimed, ammo
+    global rapid_rifle, claim_rapid_rifle, rrclaimed
     global claim_af, af_freq, auto_fire
+    global health, money, score, ammo
+    global weap_show, weapons
+    global b_list, s_list
+    global play_fill
+    global sm_factor
+    global bs_fac
+    global menu
+    global shot
     shot = True
 
     if claim_rapid_rifle:
-        if (mouseX > 450 and mouseX < 580
-                 and mouseY > 50 and mouseY < 150):
+        if (
+            mouseX > 450 and mouseX < 580 and
+            mouseY > 50 and mouseY < 150
+        ):
             claim_rapid_rifle = False
             rrclaimed = True
             ammo = 300
@@ -408,8 +427,10 @@ def mousePressed():
             weapons.append('Rapid Rifle')
 
     if claim_af:
-        if (mouseX > 600 and mouseX < 730
-                and mouseY > 50 and mouseY < 150):
+        if (
+            mouseX > 600 and mouseX < 730 and
+            mouseY > 50 and mouseY < 150
+        ):
             claim_af = False
             money -= 100
             auto_fire = True
@@ -418,11 +439,24 @@ def mousePressed():
             weapons.append('Auto-Shoot')
 
     if health <= 0:
-        if (mouseX > res_loc.x and mouseX < res_loc.x + res_si.x
-                and mouseY > res_loc.y and mouseY < res_loc.y + res_si.y):
-            health = 100
+        if (
+            mouseX > res_loc.x and mouseX < res_loc.x + res_si.x and
+            mouseY > res_loc.y and mouseY < res_loc.y + res_si.y
+        ):
+            health = 80
             money = 0
             score = 0
+
+            auto_fire = False
+            af_freq = 600
+            claim_af = False
+
+            claim_rapid_rifle = False
+            rapid_rifle = False
+            rrclaimed = False
+
+            weapons = ['Boring Blaster']
+            weap_show = ''
             b_list = []
             s_list = [
                 Slime(PVector(random(25, 750), random(25, 600)), player.lo),
@@ -430,9 +464,17 @@ def mousePressed():
                 Slime(PVector(random(25, 750), random(25, 600)), player.lo)
                 ]
 
+            menu = True
+            shoot_freq = 200
+            play_fill = 255
+            bs_fac = 1
+            sm_factor = 3
+
     if menu:
-        if (mouseX in range(int(play_loc.x), int(play_loc.x + play_si.x))
-                and mouseY in range(int(play_loc.y), int(play_loc.y + play_si.y))):
+        if (
+            mouseX in range(int(play_loc.x), int(play_loc.x + play_si.x)) and
+            mouseY in range(int(play_loc.y), int(play_loc.y + play_si.y))
+        ):
             menu = False
 
 
