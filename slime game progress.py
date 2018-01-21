@@ -210,9 +210,9 @@ def draw():
         # Showing auto shooting level
         if auto_fire:
             af_level = str((af_freq / 60) * -1 + 10)
-            if af_level = '9':
-                af_level = 'max.
-            text('Auto Shoot lv: ' + af_level), 550, 30)
+            if af_level == '9':
+                af_level = 'max.'
+            text('Auto Shoot lv: ' + af_level, 550, 30)
 
         # Showing money
         text('Money: $' + str(money), 20, 50)
