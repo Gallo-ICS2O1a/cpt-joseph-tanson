@@ -1,5 +1,4 @@
 from shucks import Bullet, Player, Slime
-import ast
 
 key_states = [False for i in range(223)]
 
@@ -84,6 +83,10 @@ def in_barrier(v):
         return False
 
 
+def cond(x1, x2, y1, y2):
+    return [mouseX > x1, mouseX < x2, mouseY > y1, mouseY < y2]
+
+
 def setup():
     size(750, 600)
 
@@ -134,6 +137,10 @@ def draw():
         textSize(32)
         text('Use Mouse to Aim and Fire', 180, 570)
 
+        textSize(24)
+        text('$100 for Auto-Fire', 500, 390)
+        text('$150 for Rapid Rifle', 500, 420)
+
     elif health > 0:
 
         if health > 100 : health = 100
@@ -149,7 +156,7 @@ def draw():
                 b_list.append(Bullet(player.lo, s.lo, True))
 
         # increases money
-        if frameCount % 300 == 0 : money += 15
+        if frameCount % 60 == 0 : money += 5
 
         # makes the slimes shoot
         if frameCount % shoot_freq == 0:
@@ -169,7 +176,7 @@ def draw():
         # increase freq slimes shoot and speed of bullets
         if frameCount % 1200 == 0:
             shoot_freq = int(shoot_freq * 0.95)
-            bs_fac *= 1.1
+            bs_fac *= 1.05
 
         stroke(0)
         fill(255)
@@ -193,11 +200,17 @@ def draw():
         fill(0, 0, 80)
         ellipse(player.lo.x, player.lo.y, player.si, player.si)
 
+        # Showing weapons
+        weap_show = ''
+        for weapon in weapons:
+            if weapon not in weap_show:
+                weap_show += weapon + ' / '
+            if weapon == 'Rapid Rifle' and ammo <= 0:
+                weapons.remove(weapon)
+            if ammo > 0 and 'Rapid Rifle' not in weapons:
+                weapons.append('Rapid Rifle')
         fill(100, 120, 200)
         textSize(18)
-        # Showing weapons
-        for weapon in weapons:
-            if weapon not in weap_show: weap_show += weapon + ' / '
         text('Weapons: ' + weap_show, 20, 30)
 
         # Showing auto shooting level
@@ -301,7 +314,7 @@ def draw():
                 (player.si / 2) + 2.5
             ):
                 b_list.remove(b)
-                health -= 10
+                health -= 15
 
             # Removes bullets after they're off the screen
             if (
@@ -334,7 +347,7 @@ def draw():
         if change:
             for b in b_list:
                 b.done = False
-                
+
             for s in s_list:
                 s.done = False
 
@@ -409,21 +422,14 @@ def mousePressed():
     shot = True
 
     if claim_rapid_rifle:
-        if (
-            mouseX > 450 and mouseX < 580 and
-            mouseY > 50 and mouseY < 150
-        ):
+        if all(cond(450, 580, 50, 150)):
             claim_rapid_rifle = False
             rrclaimed = True
             ammo = 300
             money -= 150
-            weapons.append('Rapid Rifle')
 
     if claim_af:
-        if (
-            mouseX > 600 and mouseX < 730 and
-            mouseY > 50 and mouseY < 150
-        ):
+        if all(cond(600, 730, 50, 150)):
             claim_af = False
             money -= 100
             auto_fire = True
@@ -433,8 +439,8 @@ def mousePressed():
 
     if health <= 0:
         if (
-            mouseX > res_loc.x and mouseX < res_loc.x + res_si.x and
-            mouseY > res_loc.y and mouseY < res_loc.y + res_si.y
+            all(cond(res_loc.x, res_loc.x + res_si.x,
+                res_loc.y, res_loc.y + res_si.y))
         ):
             health = 80
             money = 0
@@ -465,8 +471,8 @@ def mousePressed():
 
     if menu:
         if (
-            mouseX in range(int(play_loc.x), int(play_loc.x + play_si.x)) and
-            mouseY in range(int(play_loc.y), int(play_loc.y + play_si.y))
+            all(cond(play_loc.x, play_loc.x + play_si.x,
+                play_loc.y, play_loc.y + play_si.y))
         ):
             menu = False
 
