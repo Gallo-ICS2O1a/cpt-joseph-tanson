@@ -466,10 +466,10 @@ def mousePressed():
             bs_fac = 1
             sm_factor = 3
 
-    if menu:
-        if (
-            all(cond(play_loc.x, play_loc.x + play_si.x,
-                play_loc.y, play_loc.y + play_si.y))
+    if (
+        menu and
+        all(cond(play_loc.x, play_loc.x + play_si.x,
+        play_loc.y, play_loc.y + play_si.y))
         ):
             menu = False
 
