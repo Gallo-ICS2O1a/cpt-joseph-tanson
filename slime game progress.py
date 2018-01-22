@@ -67,13 +67,10 @@ def trajectory(v1, v2):
 
 
 def in_barrier(v):
-    if (
+    return (
         (int(v.x) in no_spawn1x) and (int(v.y) in no_spawn1y) or
         (int(v.x) in no_spawn2x) and (int(v.y) in no_spawn2y)
-    ):
-        return True
-    else:
-        return False
+    )
 
 
 def cond(x1, x2, y1, y2):
