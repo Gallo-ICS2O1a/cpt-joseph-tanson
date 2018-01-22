@@ -6,13 +6,6 @@ player = Player(PVector(375, 300), 40)
 
 sm_factor = 3
 b_list = []
-
-key_states = [False for i in range(223)]
-
-player = Player(PVector(375, 300), 40)
-
-sm_factor = 3
-b_list = []
 s_list = [Slime(PVector(random(25, 750), random(25, 600)), player.lo),
           Slime(PVector(random(25, 750), random(25, 600)), player.lo),
           Slime(PVector(random(25, 750), random(25, 600)), player.lo)]
@@ -96,7 +89,7 @@ def draw():
     global bar1_loc, bar1_size, bar2_loc, bar2_size
     global health_pack, health_loc, health_size
     global score, money, health, ammo
-    global change, b_done
+    global change
     global shoot_freq
     global weap_show
     global play_fill
